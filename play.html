@@ -5,87 +5,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Endless Verses</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Syne:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Syne:wght@500;700;800&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { min-height: 100vh; background: #07060c; color: #f4edff; font-family: Syne, sans-serif; overflow: hidden; }
+    html, body { height: 100%; }
+    body {
+      background: #05030a; color: #f6f1ff; font-family: Syne, sans-serif;
+      overflow: hidden;
+    }
     .bg {
       position: fixed; inset: 0;
       background:
-        radial-gradient(50% 60% at 70% 40%, rgba(140,70,255,.28), transparent 60%),
-        radial-gradient(40% 40% at 10% 80%, rgba(40,20,80,.5), transparent 60%),
-        linear-gradient(180deg, #0b0914, #05040a);
+        radial-gradient(55% 70% at 62% 42%, rgba(168,88,255,.32), transparent 58%),
+        radial-gradient(30% 40% at 18% 78%, rgba(255,196,92,.08), transparent 70%),
+        linear-gradient(180deg, #120a22 0%, #07040e 55%, #030208 100%);
     }
-    #lobby, #play { position: relative; z-index: 1; min-height: 100vh; }
-    #play { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
-    #play.on { display: flex; }
+    .bg:after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.55), transparent 28%, transparent 72%, rgba(0,0,0,.55)),
+        linear-gradient(180deg, rgba(0,0,0,.15), transparent 20%, rgba(0,0,0,.7));
+      pointer-events: none;
+    }
+    #who {
+      position: fixed; top: 22px; right: 28px; z-index: 4;
+      letter-spacing: .18em; font-size: 11px; text-transform: uppercase; color: #d7c6ff;
+    }
+    #lobby {
+      position: relative; z-index: 1; height: 100vh;
+      display: grid; grid-template-columns: 240px 1fr 300px;
+    }
     #lobby.off { display: none; }
-    #lobby { display: grid; grid-template-columns: 220px 1fr 280px; min-height: 100vh; }
-    .col { padding: 28px 22px; display: flex; flex-direction: column; gap: 10px; }
+    .col { padding: 36px 28px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
     .col.side button, .col.side a {
-      text-align: left; background: transparent; border: 0; color: #cbb8ef;
-      font: 700 18px/1.2 Syne, sans-serif; cursor: pointer; padding: 10px 0; text-decoration: none;
+      background: none; border: 0; color: rgba(230,220,255,.62);
+      font: 700 22px/1.15 Syne, sans-serif; text-align: left; cursor: pointer;
+      padding: 8px 0; text-decoration: none; letter-spacing: .02em;
     }
-    .col.side button:hover, .col.side a:hover { color: #fff; text-shadow: 0 0 18px rgba(181,107,255,.8); }
-    .stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 48px; }
+    .col.side button:hover, .col.side a:hover {
+      color: #fff;
+      text-shadow: 0 0 22px rgba(190,120,255,.9);
+    }
+    .stage {
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      padding-bottom: 56px;
+    }
+    .hero-name {
+      font-family: Cinzel, serif; font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: .28em; margin-bottom: 18px;
+      text-shadow: 0 0 40px rgba(180,90,255,.45);
+    }
     .man {
-      width: 160px; height: 280px; position: relative; margin-bottom: 28px;
+      width: 220px; height: 360px; position: relative; margin-bottom: 34px;
+      filter: drop-shadow(0 30px 50px rgba(0,0,0,.65)) drop-shadow(0 0 40px rgba(150,80,255,.25));
     }
-    .man i {
-      position: absolute; background: linear-gradient(180deg, #d8c6ff, #8a6ad8);
-      box-shadow: 0 0 24px rgba(160,90,255,.35);
+    .man i { position: absolute; background: linear-gradient(180deg, #efe7ff, #9b7cff 55%, #5a3aa8); }
+    .man .head { width: 64px; height: 64px; border-radius: 50%; left: 78px; top: 10px; }
+    .man .body { width: 86px; height: 118px; left: 67px; top: 78px; border-radius: 16px 16px 10px 10px; }
+    .man .cloak {
+      width: 150px; height: 170px; left: 35px; top: 86px; border-radius: 20px 20px 70px 70px;
+      background: linear-gradient(180deg, rgba(70,30,140,.55), rgba(20,8,40,.05)); z-index: -1;
     }
-    .man .head { width: 54px; height: 54px; border-radius: 50%; left: 53px; top: 8px; }
-    .man .body { width: 70px; height: 90px; left: 45px; top: 66px; border-radius: 10px; }
-    .man .arm-l, .man .arm-r { width: 18px; height: 80px; top: 70px; border-radius: 8px; }
-    .man .arm-l { left: 24px; transform: rotate(8deg); }
-    .man .arm-r { right: 24px; transform: rotate(-8deg); }
-    .man .leg-l, .man .leg-r { width: 22px; height: 100px; top: 154px; border-radius: 8px; }
-    .man .leg-l { left: 52px; }
-    .man .leg-r { right: 52px; }
+    .man .arm-l, .man .arm-r { width: 22px; height: 108px; top: 84px; border-radius: 12px; }
+    .man .arm-l { left: 42px; transform: rotate(11deg); }
+    .man .arm-r { right: 42px; transform: rotate(-11deg); }
+    .man .leg-l, .man .leg-r { width: 26px; height: 132px; top: 192px; border-radius: 10px; }
+    .man .leg-l { left: 78px; }
+    .man .leg-r { right: 78px; }
+    .pedestal {
+      width: 280px; height: 18px; margin: -18px 0 26px;
+      background: radial-gradient(ellipse at center, rgba(200,150,255,.35), transparent 70%);
+      filter: blur(2px);
+    }
     #startBtn {
-      min-width: 280px; padding: 16px 28px; font: 800 28px Syne, sans-serif;
-      letter-spacing: .12em; border: 0; border-radius: 6px; cursor: pointer;
-      background: linear-gradient(180deg, #ffe08a, #f0b429); color: #1a1204;
-      box-shadow: 0 10px 40px rgba(240,180,41,.35);
+      min-width: 340px; padding: 18px 30px;
+      font: 800 32px/1 Syne, sans-serif; letter-spacing: .2em;
+      border: 0; border-radius: 4px; cursor: pointer; color: #1a1202;
+      background: linear-gradient(180deg, #ffe9a8, #f0b429 46%, #c48410);
+      box-shadow: 0 12px 50px rgba(240,180,41,.38), inset 0 1px 0 rgba(255,255,255,.55);
     }
-    #startBtn:hover { filter: brightness(1.08); }
-    .right h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 28px; margin-bottom: 8px; }
-    #dollStats { list-style: none; font-size: 13px; color: #cbb8ef; }
-    #dollStats li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    #startBtn:hover { filter: brightness(1.07) saturate(1.1); }
+    .right h2 {
+      font-family: Cinzel, serif; font-weight: 500; letter-spacing: .16em;
+      font-size: 15px; margin-bottom: 14px; color: #e7d9ff;
+    }
+    #dollStats { list-style: none; }
+    #dollStats li {
+      display: flex; justify-content: space-between; gap: 16px;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.07);
+      font-size: 13px; color: #b9a8d8;
+    }
     #dollStats em { font-style: normal; color: #fff; }
-    #who { position: absolute; top: 24px; right: 24px; color: #b7a8d4; z-index: 2; }
+    .r-common em, .r-common b { color: #d7d2e2; }
+    .r-rare em, .r-rare b { color: #6ec8ff; }
+    .r-epic em, .r-epic b { color: #c086ff; }
+    .r-legendary em, .r-legendary b { color: #ffc85a; }
     #locker {
       display: none; position: fixed; inset: 0; z-index: 8;
-      background: rgba(4,3,10,.86); padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(8,5,16,.94), rgba(5,3,10,.96));
+      padding: 72px 40px 40px;
     }
-    #locker.on { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
-    #slots, #items { overflow: auto; }
-    .slot, .item {
-      display: block; width: 100%; text-align: left; margin: 0 0 8px;
-      padding: 12px 14px; border-radius: 12px; cursor: pointer; font: inherit; color: #fff;
-      background: rgba(255,255,255,.04); border: 1px solid rgba(214,186,255,.2);
-    }
-    .slot small { display: block; color: #b7a8d4; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
-    .slot.on, .item.on { border-color: #f0b429; box-shadow: 0 0 16px rgba(240,180,41,.25); }
+    #locker.on { display: grid; grid-template-columns: 300px 1fr; gap: 22px; }
     #closeLocker {
-      position: absolute; top: 18px; right: 18px;
-      background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3);
-      padding: 8px 12px; border-radius: 999px; cursor: pointer; font: inherit;
+      position: absolute; top: 22px; right: 28px;
+      background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.28);
+      padding: 8px 14px; border-radius: 999px; cursor: pointer; font: inherit;
     }
-    canvas { width: min(960px, 100%); height: auto; border: 1px solid rgba(214,186,255,.2); }
-    #hud { width: min(960px,100%); display: flex; justify-content: space-between; color: #b7a8d4; }
-    #hud button { background: transparent; color: #e3c9ff; border: 1px solid rgba(214,186,255,.3); padding: 6px 10px; border-radius: 999px; cursor: pointer; font: inherit; }
-    @media (max-width: 900px) {
+    .slot, .item {
+      display: block; width: 100%; text-align: left; margin: 0 0 10px;
+      padding: 14px 16px; border-radius: 14px; cursor: pointer; font: inherit; color: #fff;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(214,186,255,.16);
+    }
+    .slot small, .item small {
+      display: block; color: #9b8fb8; font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+    }
+    .slot.on, .item.on { border-color: #f0b429; box-shadow: 0 0 24px rgba(240,180,41,.2); }
+    .item { display: flex; justify-content: space-between; align-items: center; }
+    #play { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative; z-index: 1; }
+    #play.on { display: flex; }
+    canvas { width: min(1100px, 94vw); height: auto; border: 1px solid rgba(214,186,255,.18); box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+    #hud { width: min(1100px,94vw); display: flex; justify-content: space-between; color: #cbb8ef; letter-spacing: .12em; text-transform: uppercase; font-size: 12px; }
+    #hud button {
+      background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.28);
+      padding: 7px 12px; border-radius: 999px; cursor: pointer; font: inherit;
+    }
+    @media (max-width: 980px) {
       #lobby { grid-template-columns: 1fr; }
       .right { display: none; }
+      #locker.on { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <div class="bg"></div>
   <div id="who"></div>
-
   <div id="lobby">
     <div class="col side">
       <button type="button" id="startSide">Spielen</button>
@@ -96,9 +151,12 @@
       <button type="button" id="logoutPlay">Logout</button>
     </div>
     <div class="stage">
+      <div class="hero-name">ENDLESS VERSES</div>
       <div class="man" aria-hidden="true">
-        <i class="head"></i><i class="body"></i><i class="arm-l"></i><i class="arm-r"></i><i class="leg-l"></i><i class="leg-r"></i>
+        <i class="cloak"></i><i class="head"></i><i class="body"></i>
+        <i class="arm-l"></i><i class="arm-r"></i><i class="leg-l"></i><i class="leg-r"></i>
       </div>
+      <div class="pedestal"></div>
       <button type="button" id="startBtn">SPIELEN</button>
     </div>
     <div class="col right">
@@ -106,13 +164,11 @@
       <ul id="dollStats"></ul>
     </div>
   </div>
-
   <div id="locker">
     <button type="button" id="closeLocker">Zurück</button>
     <div id="slots"></div>
     <div id="items"></div>
   </div>
-
   <div id="play">
     <div id="hud">
       <span id="verseName">Hub</span>
@@ -120,7 +176,6 @@
     </div>
     <canvas id="game" width="960" height="540"></canvas>
   </div>
-
   <script src="js/auth.js"></script>
   <script>
     if (!EVAuth.current()) location.href = "index.html";

@@ -6,49 +6,49 @@ window.EVLoadout = (function () {
   };
   const ITEMS = {
     pet: [
-      { id: "none", name: "Kein Pet" },
-      { id: "shade", name: "Schattengeist" },
-      { id: "ember", name: "Funkenwolf" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "shade", name: "Schattengeist", r: "rare" },
+      { id: "ember", name: "Funkenwolf", r: "epic" }
     ],
     weapon: [
-      { id: "none", name: "Keine Waffe" },
-      { id: "blade", name: "Leerenklinge" },
-      { id: "staff", name: "Versstab" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "blade", name: "Leerenklinge", r: "epic" },
+      { id: "staff", name: "Versstab", r: "legendary" }
     ],
     helm: [
-      { id: "none", name: "Kein Helm" },
-      { id: "iron", name: "Eisenvisier" },
-      { id: "veil", name: "Schleierkrone" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "iron", name: "Eisenvisier", r: "rare" },
+      { id: "veil", name: "Schleierkrone", r: "legendary" }
     ],
     chest: [
-      { id: "none", name: "Keine Brust" },
-      { id: "plate", name: "Plattenbrust" },
-      { id: "wrap", name: "Seidenwickel" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "plate", name: "Plattenbrust", r: "rare" },
+      { id: "wrap", name: "Seidenwickel", r: "epic" }
     ],
     pants: [
-      { id: "none", name: "Keine Hose" },
-      { id: "greaves", name: "Beinschienen" },
-      { id: "cloth", name: "Wanderhose" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "greaves", name: "Beinschienen", r: "rare" },
+      { id: "cloth", name: "Wanderhose", r: "common" }
     ],
     shoes: [
-      { id: "none", name: "Keine Schuhe" },
-      { id: "boots", name: "Marschstiefel" },
-      { id: "light", name: "Leichttritt" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "boots", name: "Marschstiefel", r: "rare" },
+      { id: "light", name: "Leichttritt", r: "epic" }
     ],
     armor: [
-      { id: "none", name: "Keine Rüstung" },
-      { id: "mail", name: "Kettenhemd" },
-      { id: "glass", name: "Glaspanzer" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "mail", name: "Kettenhemd", r: "rare" },
+      { id: "glass", name: "Glaspanzer", r: "legendary" }
     ],
     cloak: [
-      { id: "none", name: "Kein Mantel" },
-      { id: "night", name: "Nachtmantel" },
-      { id: "royal", name: "Königsumhang" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "night", name: "Nachtmantel", r: "epic" },
+      { id: "royal", name: "Königsumhang", r: "legendary" }
     ],
     gloves: [
-      { id: "none", name: "Keine Handschuhe" },
-      { id: "grip", name: "Griffleder" },
-      { id: "arc", name: "Funkenhand" }
+      { id: "none", name: "Leer", r: "common" },
+      { id: "grip", name: "Griffleder", r: "rare" },
+      { id: "arc", name: "Funkenhand", r: "epic" }
     ]
   };
 
@@ -56,33 +56,23 @@ window.EVLoadout = (function () {
     const u = window.EVAuth && EVAuth.current();
     return "ev-loadout-" + (u ? u.name : "guest");
   }
-
   function empty() {
     const o = {};
     SLOTS.forEach((s) => { o[s] = "none"; });
     return o;
   }
-
   function get() {
-    try {
-      return Object.assign(empty(), JSON.parse(localStorage.getItem(key()) || "{}"));
-    } catch (e) {
-      return empty();
-    }
+    try { return Object.assign(empty(), JSON.parse(localStorage.getItem(key()) || "{}")); }
+    catch (e) { return empty(); }
   }
-
   function set(slot, id) {
     const data = get();
     data[slot] = id;
     localStorage.setItem(key(), JSON.stringify(data));
     return data;
   }
-
-  function nameOf(slot, id) {
-    const list = ITEMS[slot] || [];
-    const hit = list.find((x) => x.id === id);
-    return hit ? hit.name : "—";
+  function find(slot, id) {
+    return (ITEMS[slot] || []).find((x) => x.id === id) || { id: "none", name: "Leer", r: "common" };
   }
-
-  return { SLOTS: SLOTS, LABELS: LABELS, ITEMS: ITEMS, get: get, set: set, nameOf: nameOf };
+  return { SLOTS: SLOTS, LABELS: LABELS, ITEMS: ITEMS, get: get, set: set, find: find };
 })();
