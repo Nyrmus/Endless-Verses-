@@ -30,74 +30,117 @@ EVNinja.prototype.update = function (dt, input) {
   this.t += dt; this.anim += dt;
   this.stamina = Math.min(100, this.stamina + 12 * dt);
   if (this.parryT > 0) { this.parryT -= dt; if (this.parryT <= 0) this.state = "idle"; }
-  if (this.state === "reload" && this.anim > 0.3) { this.knives = 6; this.state = "idle"; }
+  if (this.state === "reload" && this.anim > 0.32) { this.knives = 6; this.state = "idle"; }
   if (this.state === "throw" && this.anim > 0.42) this.state = "idle";
-  if (this.state === "dash" && this.anim > 0.2) this.state = input.run ? "run" : "idle";
-  if (this.state !== "parry" && this.state !== "throw" && this.state !== "reload") {
+  if (this.state === "dash" && this.anim > 0.22) this.state = input.run ? "run" : "idle";
+  if (this.state !== "parry" && this.state !== "throw" && this.state !== "reload" && this.state !== "dash") {
     if (!this.onGround) this.state = "jump";
     else if (input.run) this.state = "run";
-    else if (this.state !== "dash") this.state = "idle";
+    else this.state = "idle";
   }
 };
-EVNinja.prototype.spriteKey = function () {
-  const s = this.state;
-  if (s === "run" || s === "dash") return "run";
-  if (s === "jump" || s === "throw") return "jump";
-  if (s === "parry") return "parry";
-  return "idle";
+function cap(ctx, x, y, a, len, w, col) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a);
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.moveTo(-w * 0.55, 0);
+  ctx.lineTo(w * 0.55, 0);
+  ctx.lineTo(w * 0.4, len);
+  ctx.lineTo(-w * 0.4, len);
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+EVNinja.prototype.pose = function () {
+  const s = this.state, t = this.t, a = this.anim;
+  const run = s === "run" || s === "dash" ? Math.sin(t * 12.5) : 0;
+  const idle = s === "idle" ? Math.sin(t * 2.1) : 0;
+  const p = {
+    bob: s === "idle" ? idle * 1.6 : (s === "run" ? Math.abs(run) * -3 : 0),
+    lean: s === "dash" ? 0.28 : (s === "run" ? 0.1 : (s === "jump" ? 0.05 : 0)),
+    hip: 0,
+    thighL: 0.08, thighR: 0.12, shinL: 0.1, shinR: 0.08,
+    armL: 0.35, armR: -0.28, elL: 0.25, elR: 0.2,
+    cloth: idle * 0.12
+  };
+  if (s === "run" || s === "dash") {
+    p.thighL = run * 0.7; p.thighR = -run * 0.7;
+    p.shinL = 0.15 + Math.max(0, run) * 0.55;
+    p.shinR = 0.15 + Math.max(0, -run) * 0.55;
+    p.armL = -run * 0.85; p.armR = run * 0.85;
+    p.elL = 0.35; p.elR = 0.35;
+    p.cloth = run * 0.2;
+  }
+  if (s === "jump") {
+    p.thighL = -0.55; p.thighR = -0.35; p.shinL = 0.7; p.shinR = 0.55;
+    p.armL = -1.1; p.armR = -0.4; p.bob = -6;
+  }
+  if (s === "throw") {
+    const k = Math.min(1, a / 0.18);
+    p.armR = -0.2 - k * 2.2; p.elR = 0.1;
+    p.armL = 0.5; p.thighR = 0.25;
+  }
+  if (s === "parry") {
+    p.thighL = -0.15; p.thighR = 0.35; p.shinL = 0.35; p.shinR = 0.15;
+    p.armL = -0.15; p.armR = 0.85; p.elL = 1.1; p.elR = 0.15; p.lean = -0.08;
+  }
+  if (s === "reload") { p.armR = 1.15; p.elR = 1.1; p.armL = 0.4; }
+  return p;
 };
 EVNinja.prototype.draw = function (ctx) {
-  const art = window.EVArt && EVArt.imgs && EVArt.imgs[this.spriteKey()];
-  if (art && art.width) {
-    const h = 210 * this.scale, w = h * (art.width / art.height);
-    ctx.save(); ctx.translate(this.x, this.y);
-    ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.beginPath(); ctx.ellipse(0, 4, 26 * this.scale, 6, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.scale(this.dir, 1);
-    ctx.drawImage(art, -w / 2, -h + 6, w, h);
-    ctx.restore(); return;
+  const S = this.scale, p = this.pose();
+  ctx.save();
+  ctx.translate(this.x, this.y + p.bob);
+  ctx.scale(this.dir * S, S);
+  ctx.rotate(p.lean);
+  ctx.fillStyle = "rgba(0,0,0,0.48)";
+  ctx.beginPath(); ctx.ellipse(0, 5, 16, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+
+  cap(ctx, -5.5, -8, p.thighL, 26, 9, "#0b0b12");
+  cap(ctx, -5.5 + Math.sin(p.thighL) * 26, -8 + Math.cos(p.thighL) * 26, p.thighL + p.shinL, 24, 7.5, "#08080e");
+  ctx.save(); ctx.translate(-5.5 + Math.sin(p.thighL) * 26 + Math.sin(p.thighL + p.shinL) * 24, -8 + Math.cos(p.thighL) * 26 + Math.cos(p.thighL + p.shinL) * 24);
+  ctx.rotate(p.thighL + p.shinL); ctx.fillStyle = "#1a1820"; ctx.fillRect(-5, -1, 11, 5); ctx.restore();
+
+  cap(ctx, 5.5, -8, p.thighR, 26, 9, "#12121a");
+  cap(ctx, 5.5 + Math.sin(p.thighR) * 26, -8 + Math.cos(p.thighR) * 26, p.thighR + p.shinR, 24, 7.5, "#0a0a10");
+  ctx.save(); ctx.translate(5.5 + Math.sin(p.thighR) * 26 + Math.sin(p.thighR + p.shinR) * 24, -8 + Math.cos(p.thighR) * 26 + Math.cos(p.thighR + p.shinR) * 24);
+  ctx.rotate(p.thighR + p.shinR); ctx.fillStyle = "#1a1820"; ctx.fillRect(-5, -1, 11, 5); ctx.restore();
+
+  ctx.fillStyle = "#0c0c14";
+  ctx.beginPath(); ctx.moveTo(-8, -10); ctx.lineTo(8, -10); ctx.lineTo(6.5, 2); ctx.lineTo(-6.5, 2); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#16141e";
+  ctx.beginPath(); ctx.moveTo(-15, -40); ctx.lineTo(15, -40); ctx.lineTo(9, -10); ctx.lineTo(-9, -10); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#2c2438"; ctx.fillRect(-10, -24, 20, 3);
+  ctx.fillStyle = "#c9a24a"; ctx.fillRect(-2, -24, 4, 3);
+  ctx.fillStyle = "#08080e";
+  ctx.beginPath(); ctx.moveTo(-16, -38); ctx.quadraticCurveTo(-22, -20, -14, -8); ctx.lineTo(-9, -10); ctx.lineTo(-8, -36); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(16, -38); ctx.quadraticCurveTo(22, -20, 14, -8); ctx.lineTo(9, -10); ctx.lineTo(8, -36); ctx.closePath(); ctx.fill();
+  ctx.save(); ctx.translate(0, -12); ctx.rotate(p.cloth);
+  ctx.fillStyle = "rgba(8,8,14,0.85)";
+  ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.lineTo(10, 22); ctx.lineTo(-3, 18); ctx.closePath(); ctx.fill();
+  ctx.restore();
+
+  cap(ctx, -14, -36, p.armL, 20, 7, "#101018");
+  cap(ctx, -14 + Math.sin(p.armL) * 20, -36 + Math.cos(p.armL) * 20, p.armL + p.elL, 18, 6, "#0c0c14");
+  cap(ctx, 14, -36, p.armR, 20, 7, "#101018");
+  const hx = 14 + Math.sin(p.armR) * 20, hy = -36 + Math.cos(p.armR) * 20;
+  cap(ctx, hx, hy, p.armR + p.elR, 18, 6, "#0c0c14");
+  ctx.save(); ctx.translate(hx + Math.sin(p.armR + p.elR) * 18, hy + Math.cos(p.armR + p.elR) * 18);
+  ctx.rotate(p.armR + p.elR);
+  ctx.fillStyle = "#e8e2dc";
+  ctx.beginPath(); ctx.moveTo(-1, 0); ctx.lineTo(2.2, 16); ctx.lineTo(-0.6, 16); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#c9a24a"; ctx.fillRect(-2, -2, 4, 4);
+  ctx.restore();
+
+  ctx.fillStyle = "#1a1614"; ctx.beginPath(); ctx.ellipse(1, -49, 6.2, 7.2, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#07070c";
+  ctx.beginPath(); ctx.moveTo(-9, -50); ctx.quadraticCurveTo(2, -70, 18, -46); ctx.lineTo(8, -44); ctx.quadraticCurveTo(0, -56, -9, -46); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#0c0c12"; ctx.fillRect(-5, -48, 12, 4);
+  ctx.fillStyle = "#e8c86a"; ctx.fillRect(-3.5, -47, 2.4, 1.6); ctx.fillRect(2.2, -47, 2.4, 1.6);
+
+  if (this.state === "parry" && window.EV && EV.kit) {
+    EV.kit.draw(ctx, "slash_02", 16, -36, 88, 0.4, 0.5);
+    EV.kit.draw(ctx, "light_01", 4, -28, 110, 0.16, 0);
   }
-  const S = this.scale, bob = this.state === "idle" ? Math.sin(this.t * 2.2) * 1.4 : 0;
-  const run = this.state === "run" ? Math.sin(this.t * 11) : 0;
-  ctx.save(); ctx.translate(this.x, this.y + bob); ctx.scale(this.dir * S, S);
-  ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(0, 4, 18, 5, 0, 0, Math.PI * 2); ctx.fill();
-  const thigh = this.state === "run" ? run * 0.55 : (this.state === "jump" ? -0.4 : 0.08);
-  const thighB = this.state === "run" ? -run * 0.55 : 0.12;
-  ctx.save(); ctx.translate(-6, -6); ctx.rotate(thigh);
-  ctx.fillStyle = "#0c0c12"; ctx.fillRect(-5, 0, 10, 28);
-  ctx.translate(0, 28); ctx.rotate(0.12 + (this.state === "run" ? Math.max(0, run) * 0.4 : 0.08));
-  ctx.fillStyle = "#09090e"; ctx.fillRect(-4, 0, 8, 26); ctx.fillStyle = "#16141c"; ctx.fillRect(-5, 24, 10, 5);
-  ctx.restore();
-  ctx.save(); ctx.translate(6, -6); ctx.rotate(thighB);
-  ctx.fillStyle = "#101018"; ctx.fillRect(-5, 0, 10, 28);
-  ctx.translate(0, 28); ctx.rotate(0.1);
-  ctx.fillStyle = "#0a0a10"; ctx.fillRect(-4, 0, 8, 26); ctx.fillStyle = "#16141c"; ctx.fillRect(-5, 24, 10, 5);
-  ctx.restore();
-  ctx.fillStyle = "#0b0b12";
-  ctx.beginPath(); ctx.moveTo(-9, -8); ctx.lineTo(9, -8); ctx.lineTo(7, 2); ctx.lineTo(-7, 2); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#14141c";
-  ctx.beginPath(); ctx.moveTo(-16, -38); ctx.lineTo(16, -38); ctx.lineTo(10, -8); ctx.lineTo(-10, -8); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#2a2438"; ctx.fillRect(-11, -22, 22, 3);
-  ctx.fillStyle = "#0a0a10";
-  ctx.beginPath(); ctx.moveTo(-18, -36); ctx.lineTo(-6, -34); ctx.lineTo(-8, -6); ctx.lineTo(-16, -8); ctx.closePath(); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(18, -36); ctx.lineTo(6, -34); ctx.lineTo(8, -6); ctx.lineTo(16, -8); ctx.closePath(); ctx.fill();
-  const arm = this.state === "throw" ? -2.2 : (this.state === "parry" ? 0.7 : (this.state === "run" ? run * 0.7 : -0.25));
-  const armL = this.state === "parry" ? -0.9 : (this.state === "run" ? -run * 0.7 : 0.3);
-  ctx.save(); ctx.translate(-15, -34); ctx.rotate(armL);
-  ctx.fillStyle = "#101018"; ctx.fillRect(-3.5, 0, 7, 22);
-  ctx.translate(0, 22); ctx.rotate(0.2); ctx.fillRect(-3, 0, 6, 18);
-  ctx.restore();
-  ctx.save(); ctx.translate(15, -34); ctx.rotate(arm);
-  ctx.fillStyle = "#101018"; ctx.fillRect(-3.5, 0, 7, 22);
-  ctx.translate(0, 22); ctx.rotate(this.state === "reload" ? 1.0 : 0.15); ctx.fillRect(-3, 0, 6, 18);
-  ctx.fillStyle = "#d8d2dc"; ctx.beginPath(); ctx.moveTo(0, 16); ctx.lineTo(3, 34); ctx.lineTo(-1, 33); ctx.closePath(); ctx.fill();
-  ctx.restore();
-  ctx.fillStyle = "#1a1614"; ctx.beginPath(); ctx.ellipse(0, -48, 7, 8, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#07070c"; ctx.beginPath(); ctx.moveTo(-8, -50); ctx.quadraticCurveTo(2, -66, 16, -44); ctx.lineTo(6, -42); ctx.quadraticCurveTo(0, -52, -8, -44); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#c9a24a"; ctx.fillRect(-5, -46, 3, 2); ctx.fillRect(1, -46, 3, 2);
-  if (this.state === "parry") {
-    EV.kit.draw(ctx, "slash_02", 8, -40, 90, 0.45, 0.4);
-    EV.kit.draw(ctx, "light_01", 0, -30, 120, 0.2, 0);
-  }
-  if (this.state === "dash") EV.kit.draw(ctx, "smoke_06", -20, -20, 70, 0.25, 0);
+  if (this.state === "dash" && window.EV && EV.kit) EV.kit.draw(ctx, "smoke_06", -18, -16, 64, 0.28, 0);
   ctx.restore();
 };
