@@ -10,59 +10,30 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
     body { background: #07060c; color: #f3edff; font-family: Syne, sans-serif; overflow: hidden; }
-    .fx {
-      position: fixed; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(50% 60% at 62% 40%, rgba(120,60,255,.22), transparent 60%),
-        linear-gradient(180deg, #120c1c, #05040a);
-    }
+    .fx { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(50% 60% at 62% 40%, rgba(120,60,255,.22), transparent 60%), linear-gradient(180deg, #120c1c, #05040a); }
     #who { position: fixed; top: 18px; right: 24px; z-index: 6; letter-spacing: .2em; font-size: 11px; text-transform: uppercase; color: #d7c6ff; }
-    #tokens {
-      position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 6;
-      padding: 6px 14px; border: 1px solid rgba(214,186,255,.25); border-radius: 999px;
-      background: rgba(10,8,18,.55); letter-spacing: .14em; font-size: 12px;
-    }
+    #tokens { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 6; padding: 6px 14px; border: 1px solid rgba(214,186,255,.25); border-radius: 999px; background: rgba(10,8,18,.55); letter-spacing: .14em; font-size: 12px; }
     #lobby { position: relative; z-index: 1; height: 100vh; display: grid; grid-template-rows: 1fr auto; }
     #lobby.off { display: none; }
     .row { display: grid; grid-template-columns: 220px 1fr 260px; height: calc(100vh - 128px); }
     nav.side { padding: 88px 28px 20px; display: flex; flex-direction: column; gap: 4px; }
-    nav.side button, nav.side a {
-      background: none; border: 0; color: rgba(230,220,255,.55);
-      font: 700 20px Syne, sans-serif; text-align: left; cursor: pointer; padding: 8px 0; text-decoration: none;
-    }
+    nav.side button, nav.side a { background: none; border: 0; color: rgba(230,220,255,.55); font: 700 20px Syne, sans-serif; text-align: left; cursor: pointer; padding: 8px 0; text-decoration: none; }
     nav.side button:hover, nav.side a:hover { color: #fff; text-shadow: 0 0 18px rgba(180,110,255,.8); }
     .stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10px; }
     #preview { width: min(420px, 42vw); height: min(460px, 58vh); }
     .cname { font-family: Cinzel, serif; letter-spacing: .22em; margin-bottom: 8px; }
-    #startBtn {
-      min-width: 280px; margin-top: 8px; padding: 16px 26px;
-      font: 800 28px Syne, sans-serif; letter-spacing: .18em; border: 0; cursor: pointer;
-      background: linear-gradient(#ffe7a8, #e8a31a); color: #1a1202;
-    }
+    #startBtn { min-width: 280px; margin-top: 8px; padding: 16px 26px; font: 800 28px Syne, sans-serif; letter-spacing: .18em; border: 0; cursor: pointer; background: linear-gradient(#ffe7a8, #e8a31a); color: #1a1202; }
     .meta { padding: 88px 28px 20px; }
     .meta h2 { font-family: Cinzel, serif; font-size: 14px; letter-spacing: .18em; margin-bottom: 10px; }
     .meta p { color: #cbb8ef; font-size: 14px; margin: 6px 0; }
-    #modStrip {
-      height: 128px; border-top: 1px solid rgba(214,186,255,.16);
-      display: flex; gap: 10px; padding: 14px 22px; overflow-x: auto;
-      background: rgba(0,0,0,.28);
-    }
-    .mod-mini {
-      min-width: 160px; padding: 12px; border: 1px solid rgba(214,186,255,.2);
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
-    }
-    .mod-mini.locked, .mod-card.locked { position: relative; }
-    .mod-mini.locked:after, .panel.locked-panel:after {
-      content: "IN DEVELOPMENT"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: rgba(6,4,12,.55); letter-spacing: .16em; font-size: 10px; pointer-events: none;
-    }
+    #modStrip { height: 128px; border-top: 1px solid rgba(214,186,255,.16); display: flex; gap: 10px; padding: 14px 22px; overflow-x: auto; background: rgba(0,0,0,.28); }
+    .mod-mini { min-width: 160px; padding: 12px; border: 1px solid rgba(214,186,255,.2); }
+    .mod-mini.locked:after, .panel.locked-panel:after { content: "IN DEVELOPMENT"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(6,4,12,.55); letter-spacing: .16em; font-size: 10px; pointer-events: none; }
+    .mod-mini.locked, .mod-card.locked, .panel.locked-panel { position: relative; }
     .panel { display: none; position: fixed; inset: 0; z-index: 8; background: rgba(5,4,10,.86); padding: 70px 40px 40px; overflow: auto; }
     .panel.on { display: block; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-    .card, .mod-card, .slot, .item {
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
-      border: 1px solid rgba(214,186,255,.18); padding: 16px; color: inherit; text-align: left;
-    }
+    .card, .mod-card, .slot, .item { background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015)); border: 1px solid rgba(214,186,255,.18); padding: 16px; color: inherit; text-align: left; }
     .x { position: absolute; top: 18px; right: 22px; background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3); padding: 6px 12px; cursor: pointer; font: inherit; }
     .slot, .item { display: block; width: 100%; margin: 0 0 8px; cursor: pointer; font: inherit; }
     .slot.on, .item.on { border-color: #f0b429; }
@@ -70,19 +41,12 @@
     #play { display: none; position: fixed; inset: 0; z-index: 4; background: #09080f; }
     #play.on { display: block; }
     canvas#game { position: absolute; inset: 0; width: 100%; height: 100%; }
-    #hud {
-      position: absolute; top: 0; left: 0; right: 0; z-index: 5;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 22px; font-size: 12px; letter-spacing: .12em;
-      background: linear-gradient(180deg, rgba(0,0,0,.45), transparent); gap: 12px;
-    }
+    #hud { position: absolute; top: 0; left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; font-size: 12px; letter-spacing: .12em; background: linear-gradient(180deg, rgba(0,0,0,.45), transparent); gap: 12px; }
     #stam, #hp { width: 140px; height: 7px; background: #1a1620; border: 1px solid rgba(214,186,255,.2); }
     #stamHud { height: 100%; width: 100%; background: linear-gradient(90deg, #8a6bff, #e0c2ff); }
     #hpHud { height: 100%; width: 100%; background: linear-gradient(90deg, #ff5a4a, #ffc08a); }
     #hud button { background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3); padding: 6px 10px; cursor: pointer; font: inherit; }
     #hint { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: #8a7aa8; font-size: 12px; z-index: 5; }
-    button:disabled { opacity: .45; cursor: not-allowed; }
-    .stars { color: #ffd36a; letter-spacing: 2px; margin: 8px 0; }
   </style>
 </head>
 <body>
@@ -114,42 +78,23 @@
     </div>
     <div id="modStrip"></div>
   </div>
-  <section id="panelLoadout" class="panel">
-    <button class="x" type="button" data-close>Schließen</button>
-    <h2 style="margin-bottom:16px;font-family:Cinzel,serif">Loadout</h2>
-    <div class="load-grid"><div id="slots"></div><div id="items"></div></div>
-  </section>
-  <section id="panelShop" class="panel">
-    <button class="x" type="button" data-close>Schließen</button>
-    <h2 style="margin-bottom:16px;font-family:Cinzel,serif">Token-Shop</h2>
-    <div id="shopList" class="grid"></div>
-  </section>
-  <section id="panelIndex" class="panel">
-    <button class="x" type="button" data-close>Schließen</button>
-    <h2 style="margin-bottom:16px;font-family:Cinzel,serif">Index</h2>
-    <div id="indexList" class="grid"></div>
-  </section>
-  <section id="panelMods" class="panel locked-panel">
-    <button class="x" type="button" data-close>Schließen</button>
-    <h2 style="margin-bottom:16px;font-family:Cinzel,serif">Mods · 5 Sterne</h2>
-    <div id="modList" class="grid"></div>
-  </section>
+  <section id="panelLoadout" class="panel"><button class="x" type="button" data-close>Schließen</button><h2 style="margin-bottom:16px;font-family:Cinzel,serif">Loadout</h2><div class="load-grid"><div id="slots"></div><div id="items"></div></div></section>
+  <section id="panelShop" class="panel"><button class="x" type="button" data-close>Schließen</button><h2 style="margin-bottom:16px;font-family:Cinzel,serif">Token-Shop</h2><div id="shopList" class="grid"></div></section>
+  <section id="panelIndex" class="panel"><button class="x" type="button" data-close>Schließen</button><h2 style="margin-bottom:16px;font-family:Cinzel,serif">Index</h2><div id="indexList" class="grid"></div></section>
+  <section id="panelMods" class="panel locked-panel"><button class="x" type="button" data-close>Schließen</button><h2 style="margin-bottom:16px;font-family:Cinzel,serif">Mods · 5 Sterne</h2><div id="modList" class="grid"></div></section>
   <div id="play">
     <div id="hud">
       <span id="verseName">TEMPEL</span>
       <span id="lootHud">GOLD 0</span>
-      <div id="hp" title="Leben"><div id="hpHud"></div></div>
-      <div id="stam" title="Ausdauer"><div id="stamHud"></div></div>
+      <div id="hp"><div id="hpHud"></div></div>
+      <div id="stam"><div id="stamHud"></div></div>
       <button type="button" id="toMenu">Hauptmenü</button>
     </div>
     <canvas id="game" width="1280" height="720"></canvas>
-    <p id="hint">A/D · Sprung · F Messer · Q Dash · R Parry · drei Gegner im Gang</p>
+    <p id="hint">A/D · Sprung · F Messer · Q Dash · R Parry</p>
   </div>
   <script src="js/auth.js"></script>
-  <script>
-    if (!EVAuth.current()) location.href = "index.html";
-    else document.getElementById("who").textContent = EVAuth.current().name;
-  </script>
+  <script>if (!EVAuth.current()) location.href = "index.html"; else document.getElementById("who").textContent = EVAuth.current().name;</script>
   <script src="js/art.js"></script>
   <script src="js/art-arena.js"></script>
   <script src="js/art-idle.js"></script>
@@ -158,6 +103,7 @@
   <script src="js/art-parry.js"></script>
   <script src="js/art-enemies.js"></script>
   <script src="js/engine.js"></script>
+  <script src="js/map.js"></script>
   <script src="js/data.js"></script>
   <script src="js/loadout.js"></script>
   <script src="js/ninja.js"></script>
