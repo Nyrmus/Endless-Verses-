@@ -4,111 +4,155 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Endless Verses</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --ink: #f7f3ff;
+      --mute: #b7a8d4;
+      --line: rgba(210, 170, 255, .28);
+      --violet: #b56bff;
+      --deep: #6d2bff;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       min-height: 100vh;
-      color: #f4edff;
-      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      font-family: Syne, sans-serif;
+      background: #04030a;
+      overflow-x: hidden;
+    }
+    .chroma {
+      position: fixed; inset: -20%;
       background:
-        radial-gradient(900px 500px at 15% -10%, rgba(168, 90, 255, .28), transparent 55%),
-        radial-gradient(700px 420px at 90% 10%, rgba(90, 40, 160, .35), transparent 50%),
-        #05040a;
+        radial-gradient(40% 35% at 18% 8%, rgba(181,107,255,.45), transparent 58%),
+        radial-gradient(32% 28% at 88% 0%, rgba(80,220,255,.16), transparent 55%),
+        radial-gradient(28% 30% at 70% 80%, rgba(255,70,180,.12), transparent 60%),
+        conic-gradient(from 210deg at 50% 20%, rgba(181,107,255,.08), transparent 40%);
+      filter: blur(8px) saturate(1.4);
+      pointer-events: none; z-index: 0;
+      animation: drift 18s ease-in-out infinite alternate;
     }
-    body:before {
-      content: "";
-      position: fixed; inset: 0; pointer-events: none;
+    @keyframes drift {
+      from { transform: translate3d(-2%, -1%, 0) scale(1); }
+      to { transform: translate3d(2%, 2%, 0) scale(1.06); }
+    }
+    .mesh {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .22;
       background-image:
-        linear-gradient(115deg, transparent 48%, rgba(220,190,255,.08) 50%, transparent 52%),
-        linear-gradient(65deg, transparent 48%, rgba(160,110,255,.06) 50%, transparent 52%);
-      background-size: 90px 90px, 70px 70px; opacity: .35;
+        linear-gradient(115deg, transparent 49%, rgba(255,255,255,.09) 50%, transparent 51%),
+        linear-gradient(65deg, transparent 49%, rgba(181,107,255,.12) 50%, transparent 51%);
+      background-size: 72px 72px, 46px 46px;
     }
-    a { color: #e3c9ff; text-decoration: none; }
-    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 28px 22px 80px; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 22px 22px 96px; }
     .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      border: 1px solid rgba(214,186,255,.28);
-      box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16);
-      backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.18);
+      backdrop-filter: blur(22px) saturate(1.35);
     }
     .nav {
       display: flex; justify-content: space-between; align-items: center;
-      gap: 16px; padding: 14px 18px; border-radius: 18px; flex-wrap: wrap;
+      gap: 16px; padding: 12px 16px 12px 22px; border-radius: 999px;
       position: relative;
     }
-    .logo { letter-spacing: .34em; font-size: 12px; color: #f7f1ff; }
-    .nav nav { display: flex; gap: 16px; }
+    .logo {
+      font-weight: 700; letter-spacing: .28em; font-size: 11px;
+    }
+    .nav nav { display: flex; gap: 22px; color: var(--mute); font-size: 14px; }
+    .nav nav a:hover { color: #fff; }
     .account-wrap { position: relative; }
     #accountToggle {
-      background: rgba(255,255,255,.05); color: #f4edff;
-      border: 1px solid rgba(214,186,255,.35); padding: 8px 12px;
+      background: rgba(181,107,255,.12); color: #fff;
+      border: 1px solid var(--line); padding: 9px 14px;
       border-radius: 999px; cursor: pointer; font: inherit;
     }
     #accountPanel {
-      position: absolute; right: 0; top: calc(100% + 10px);
-      width: 280px; padding: 14px; border-radius: 16px; z-index: 5;
+      position: absolute; right: 0; top: calc(100% + 12px);
+      width: 300px; padding: 16px; border-radius: 22px; z-index: 8;
     }
-    .hero { padding: 72px 0 20px; text-align: center; }
-    h1 {
-      font-weight: 400; letter-spacing: .12em;
-      font-size: clamp(34px, 7vw, 58px);
-      text-shadow: 0 0 28px rgba(160,90,255,.4);
-      margin-bottom: 22px;
+    .hero { padding: 90px 0 28px; text-align: center; }
+    .hero h1 {
+      font-family: "Instrument Serif", serif;
+      font-weight: 400; font-size: clamp(52px, 11vw, 104px);
+      letter-spacing: -.03em; line-height: .88;
+      background: linear-gradient(180deg, #fff 20%, #c9a6ff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 40px rgba(181,107,255,.35));
     }
-    .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .row { display: flex; gap: 10px; justify-content: center; margin-top: 34px; }
     .btn {
-      display: inline-flex; align-items: center; padding: 12px 18px; border-radius: 999px;
-      border: 1px solid rgba(214,186,255,.5); background: linear-gradient(180deg,#c9a6ff,#8a4dff);
-      color: #14081f; cursor: pointer; font: inherit; box-shadow: 0 0 24px rgba(150,80,255,.35);
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 13px 22px; border-radius: 999px; border: 0;
+      background: linear-gradient(180deg, #e0c2ff, var(--violet) 40%, var(--deep));
+      color: #14081f; cursor: pointer; font: inherit; font-weight: 700;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 12px 40px rgba(109,43,255,.45);
     }
-    .btn.locked { opacity: .5; }
-    .stars { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
+    .btn.locked { filter: grayscale(.15); opacity: .7; }
+    .stars { display: flex; gap: 10px; justify-content: center; margin-top: 28px; }
     .stars button {
-      width: 36px; height: 36px; border-radius: 8px; transform: rotate(45deg);
-      border: 1px solid rgba(214,186,255,.4); background: rgba(255,255,255,.05);
-      color: #e3c9ff; cursor: pointer;
+      width: 38px; height: 38px; border: 1px solid var(--line);
+      background: rgba(255,255,255,.04); color: #e3c9ff; cursor: pointer;
+      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     }
-    .stars button span { display: block; transform: rotate(-45deg); }
-    #rateAvg { margin-top: 10px; color: #9b8fb0; font-size: 14px; }
-    section { padding: 36px 0; }
-    h2 { font-weight: 400; letter-spacing: .08em; margin-bottom: 16px; }
-    .socials { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
-    .diamond { width: 150px; height: 150px; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; }
-    .diamond-inner { transform: rotate(-45deg); text-align: center; }
-    .diamond .tag { display: block; color: #d7b8ff; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; }
-    .box { max-width: 520px; padding: 20px; border-radius: 22px; }
+    .stars button:hover { background: rgba(181,107,255,.35); }
+    #rateAvg { margin-top: 12px; color: var(--mute); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+    section { padding: 56px 0 10px; }
+    h2 {
+      font-family: "Instrument Serif", serif;
+      font-weight: 400; font-size: 34px; margin-bottom: 22px;
+    }
+    .socials { display: flex; justify-content: center; gap: 36px; flex-wrap: wrap; padding: 12px 0 20px; }
+    .diamond {
+      width: 168px; height: 168px;
+      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .diamond:hover { transform: scale(1.06); box-shadow: 0 0 50px rgba(181,107,255,.4); }
+    .diamond-inner { text-align: center; }
+    .diamond .tag {
+      display: block; color: #d7b8ff; font-size: 10px;
+      letter-spacing: .2em; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .box { max-width: 560px; padding: 20px; border-radius: 26px; }
     .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
     .tabs button, #logoutBtn, .cmt-actions button {
-      background: rgba(255,255,255,.05); color: #f4edff; border: 1px solid rgba(214,186,255,.28);
+      background: rgba(255,255,255,.05); color: #f4edff; border: 1px solid var(--line);
       padding: 7px 11px; border-radius: 999px; cursor: pointer; font: inherit;
     }
-    .tabs button.active { border-color: #c9a6ff; }
+    .tabs button.active { background: rgba(181,107,255,.2); }
     form { display: flex; flex-direction: column; gap: 10px; }
-    label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+    label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--mute); }
     input, textarea {
-      background: rgba(8,6,16,.7); color: #f4edff; border: 1px solid rgba(214,186,255,.28);
-      padding: 10px 12px; border-radius: 12px; font: inherit; width: 100%;
+      background: rgba(8,6,16,.65); color: #fff; border: 1px solid var(--line);
+      padding: 11px 12px; border-radius: 14px; font: inherit; width: 100%;
     }
-    textarea { min-height: 80px; resize: vertical; }
+    textarea { min-height: 88px; resize: vertical; }
     .msg, #commentErr { color: #ff9ad8; min-height: 1.2em; }
-    .muted { color: #9b8fb0; }
-    .cmt { margin: 12px 0; padding: 14px; border-radius: 16px; }
-    .cmt.pinned { box-shadow: 0 0 0 1px #c9a6ff; }
+    .muted { color: var(--mute); }
+    .cmt { margin: 12px 0; padding: 16px 16px 14px; border-radius: 20px; }
+    .cmt.pinned { box-shadow: 0 0 0 1px #c9a6ff, 0 0 28px rgba(181,107,255,.2); }
     .cmt header { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
     .owner-badge {
-      font-size: 10px; letter-spacing: .18em; padding: 3px 8px; border-radius: 999px;
-      color: #f4edff; background: #7b3dff; box-shadow: 0 0 16px rgba(150,80,255,.8);
+      font-size: 10px; letter-spacing: .2em; padding: 4px 8px; border-radius: 999px;
+      color: #fff; background: linear-gradient(90deg, #9b5cff, #6d2bff);
+      box-shadow: 0 0 18px rgba(150,80,255,.9);
     }
     .pin { font-size: 11px; color: #c9a6ff; }
     .cmt-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-    .thread { margin: 10px 0 0 16px; }
+    .thread { margin: 10px 0 0 14px; }
     .thread summary { cursor: pointer; color: #c9a6ff; margin-bottom: 8px; }
-    .note { padding: 8px 12px; margin-bottom: 8px; border-radius: 12px; background: rgba(123,61,255,.2); }
-    footer { padding-top: 20px; color: #7d738c; font-size: 12px; }
+    .note { padding: 10px 12px; margin-bottom: 8px; border-radius: 14px; background: rgba(123,61,255,.22); }
+    footer { padding-top: 48px; color: #7d738c; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
   </style>
 </head>
 <body>
+  <div class="chroma"></div>
+  <div class="mesh"></div>
   <div class="wrap" id="top">
     <header class="nav glass">
       <a class="logo" href="index.html">ENDLESS VERSES</a>
@@ -140,7 +184,7 @@
     </header>
 
     <div class="hero">
-      <h1>ENDLESS VERSES</h1>
+      <h1>Endless<br>Verses</h1>
       <div class="row">
         <a id="playBtn" class="btn locked" href="#top">Ins Spiel</a>
       </div>
