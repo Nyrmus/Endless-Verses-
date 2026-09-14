@@ -2,7 +2,7 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   const verseLabel = document.getElementById("verseName");
-  const menuEl = document.getElementById("menu");
+  const lobbyEl = document.getElementById("lobby");
   const playEl = document.getElementById("play");
   const user = window.EVAuth && EVAuth.current();
   const SAVE_KEY = "endless-verses-v01-" + (user ? user.name : "guest");
@@ -29,21 +29,15 @@
       if (typeof data.y === "number") player.y = data.y;
       if (data.verse && window.VERSES[data.verse]) verseId = data.verse;
     } catch (e) {}
-    markVerse();
   }
 
   function save() {
     localStorage.setItem(SAVE_KEY, JSON.stringify({ x: player.x, y: player.y, verse: verseId }));
   }
 
-  function markVerse() {
-    document.getElementById("pickHub").classList.toggle("active", verseId === "hub");
-    document.getElementById("pickSoul").classList.toggle("active", verseId === "soul");
-  }
-
   function startGame() {
     playing = true;
-    menuEl.classList.add("off");
+    lobbyEl.classList.add("off");
     playEl.classList.add("on");
     Object.keys(keys).forEach((k) => { keys[k] = false; });
     last = performance.now();
@@ -53,8 +47,7 @@
     save();
     playing = false;
     playEl.classList.remove("on");
-    menuEl.classList.remove("off");
-    markVerse();
+    lobbyEl.classList.remove("off");
   }
 
   window.addEventListener("keydown", (e) => {
@@ -62,13 +55,12 @@
     keys[e.code] = true;
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) e.preventDefault();
   });
-  window.addEventListener("keyup", (e) => {
-    keys[e.code] = false;
-  });
+  window.addEventListener("keyup", (e) => { keys[e.code] = false; });
 
   document.getElementById("startBtn").onclick = startGame;
-  document.getElementById("pickHub").onclick = function () { verseId = "hub"; markVerse(); save(); };
-  document.getElementById("pickSoul").onclick = function () { verseId = "soul"; markVerse(); save(); };
+  document.getElementById("startSide").onclick = startGame;
+  document.getElementById("pickHub").onclick = function () { verseId = "hub"; save(); };
+  document.getElementById("pickSoul").onclick = function () { verseId = "soul"; save(); };
   document.getElementById("toMenu").onclick = toMenu;
   document.getElementById("logoutPlay").onclick = function () {
     save();
