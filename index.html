@@ -45,11 +45,7 @@
       border-radius: 18px;
       flex-wrap: wrap;
     }
-    .logo {
-      letter-spacing: .34em;
-      font-size: 12px;
-      color: #f7f1ff;
-    }
+    .logo { letter-spacing: .34em; font-size: 12px; color: #f7f1ff; }
     .nav nav { display: flex; gap: 16px; color: #d9c6f5; }
     .hero { padding: 74px 8px 50px; }
     .kicker {
@@ -80,42 +76,50 @@
       font: inherit;
       box-shadow: 0 0 24px rgba(150, 80, 255, .35);
     }
-    .btn.ghost {
-      background: rgba(255,255,255,.04);
-      color: #ead9ff;
-      box-shadow: none;
-    }
+    .btn.ghost { background: rgba(255,255,255,.04); color: #ead9ff; box-shadow: none; }
     .btn.locked { opacity: .5; }
     .hint { margin-top: 14px; color: #9b8fb0; font-size: 14px; }
     section { padding: 42px 0; }
-    h2 { font-weight: 400; letter-spacing: .08em; margin-bottom: 18px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
+    h2 { font-weight: 400; letter-spacing: .08em; margin-bottom: 22px; }
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      padding: 10px 0 20px;
     }
-    .card {
-      padding: 20px 18px 22px;
-      border-radius: 20px;
-      min-height: 150px;
-      position: relative;
-      overflow: hidden;
+    .diamond {
+      width: 168px;
+      height: 168px;
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
-    .card:after {
-      content: "";
-      position: absolute;
-      width: 42px;
-      height: 42px;
-      right: 14px;
-      top: 14px;
-      background: linear-gradient(135deg, transparent 48%, rgba(230,210,255,.7) 50%, transparent 52%),
-                  linear-gradient(45deg, transparent 48%, rgba(170,120,255,.55) 50%, transparent 52%);
-      background-size: 42px 42px;
-      opacity: .7;
+    .diamond:hover {
+      transform: rotate(45deg) scale(1.06);
+      box-shadow: 0 0 34px rgba(160,90,255,.45), inset 0 1px 0 rgba(255,255,255,.22);
     }
-    .card h3 { font-weight: 400; margin: 8px 0; }
-    .card p { color: #cbbfdc; line-height: 1.45; }
-    .tag { color: #d7b8ff; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+    .diamond-inner {
+      transform: rotate(-45deg);
+      text-align: center;
+      width: 120px;
+    }
+    .diamond .tag {
+      display: block;
+      color: #d7b8ff;
+      font-size: 10px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .diamond strong {
+      display: block;
+      font-weight: 400;
+      font-size: 18px;
+      color: #fff;
+    }
     .auth {
       max-width: 380px;
       padding: 22px;
@@ -154,8 +158,7 @@
     <header class="nav glass">
       <a class="logo" href="index.html">ENDLESS VERSES</a>
       <nav>
-        <a href="#welt">Welt</a>
-        <a href="#verse">Verse</a>
+        <a href="#socials">Socials</a>
         <a href="#konto">Konto</a>
       </nav>
       <div>
@@ -175,21 +178,27 @@
       <p id="gateHint" class="hint">Zuerst Konto, dann öffnet sich der Hub.</p>
     </div>
 
-    <section id="welt">
-      <h2>So kommst du rein</h2>
-      <div class="grid">
-        <article class="card glass"><p class="tag">01</p><h3>Konto</h3><p>Registrieren oder einloggen. Stand bleibt in diesem Browser.</p></article>
-        <article class="card glass"><p class="tag">02</p><h3>Hub</h3><p>Neutraler Raum. Laufen, springen, Vers wechseln.</p></article>
-        <article class="card glass"><p class="tag">03</p><h3>Vers</h3><p>Eigene Welt, eigene Regeln, eigener Look.</p></article>
-      </div>
-    </section>
-
-    <section id="verse">
-      <h2>Verse</h2>
-      <div class="grid">
-        <article class="card glass"><p class="tag">offen</p><h3>Hub</h3><p>Startwelt. Schon spielbar.</p></article>
-        <article class="card glass"><p class="tag">test</p><h3>Soul</h3><p>Platzhalter-Vers für Wechsel und Farbe.</p></article>
-        <article class="card glass"><p class="tag">später</p><h3>Lizenz-Welten</h3><p>Erst wenn die Rechte klar sind.</p></article>
+    <section id="socials">
+      <h2>Socials</h2>
+      <div class="socials">
+        <a class="diamond glass" href="https://x.com/Nyrmus8" target="_blank" rel="noopener">
+          <span class="diamond-inner">
+            <span class="tag">X</span>
+            <strong>Nyrmus8</strong>
+          </span>
+        </a>
+        <a class="diamond glass" href="https://www.tiktok.com/@nyrmus" target="_blank" rel="noopener">
+          <span class="diamond-inner">
+            <span class="tag">TikTok</span>
+            <strong>nyrmus</strong>
+          </span>
+        </a>
+        <a class="diamond glass" href="https://www.reddit.com/user/Jolly_Dot_2995/" target="_blank" rel="noopener">
+          <span class="diamond-inner">
+            <span class="tag">Reddit</span>
+            <strong>Nyrmus</strong>
+          </span>
+        </a>
       </div>
     </section>
 
