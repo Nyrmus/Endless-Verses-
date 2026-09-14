@@ -8,93 +8,150 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: #08080e;
-      color: #f3efe6;
+      min-height: 100vh;
+      color: #f4edff;
       font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(900px 500px at 15% -10%, rgba(168, 90, 255, .28), transparent 55%),
+        radial-gradient(700px 420px at 90% 10%, rgba(90, 40, 160, .35), transparent 50%),
+        linear-gradient(180deg, #07060c 0%, #0b0714 45%, #05040a 100%);
     }
-    a { color: #e6d39a; text-decoration: none; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 22px 64px; }
+    body:before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(115deg, transparent 48%, rgba(220,190,255,.08) 50%, transparent 52%),
+        linear-gradient(65deg, transparent 48%, rgba(160,110,255,.06) 50%, transparent 52%);
+      background-size: 90px 90px, 70px 70px;
+      opacity: .35;
+    }
+    a { color: #e3c9ff; text-decoration: none; }
+    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 28px 22px 72px; }
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      border: 1px solid rgba(214, 186, 255, .28);
+      box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
     .nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #2a2d42;
+      padding: 14px 18px;
+      border-radius: 18px;
       flex-wrap: wrap;
     }
-    .logo { letter-spacing: .32em; font-size: 12px; color: #f3efe6; }
-    .nav nav { display: flex; gap: 18px; opacity: .75; }
-    .hero { padding: 70px 0 54px; }
-    .kicker { letter-spacing: .24em; font-size: 11px; text-transform: uppercase; color: #c8b060; }
+    .logo {
+      letter-spacing: .34em;
+      font-size: 12px;
+      color: #f7f1ff;
+    }
+    .nav nav { display: flex; gap: 16px; color: #d9c6f5; }
+    .hero { padding: 74px 8px 50px; }
+    .kicker {
+      letter-spacing: .26em;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #c9a6ff;
+    }
     h1 {
       font-weight: 400;
-      font-size: clamp(36px, 7vw, 62px);
-      line-height: 1.08;
+      font-size: clamp(36px, 7vw, 64px);
+      line-height: 1.06;
       margin: 14px 0 16px;
+      text-shadow: 0 0 28px rgba(160, 90, 255, .35);
     }
-    .lead { max-width: 540px; font-size: 18px; line-height: 1.5; color: #c9c4b8; }
+    .lead { max-width: 540px; font-size: 18px; line-height: 1.55; color: #d7cbe8; }
     .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
     .btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 12px 18px;
-      border: 1px solid #c8b060;
-      background: #c8b060;
-      color: #16140d;
+      border-radius: 999px;
+      border: 1px solid rgba(214,186,255,.5);
+      background: linear-gradient(180deg, #c9a6ff, #8a4dff);
+      color: #14081f;
       cursor: pointer;
       font: inherit;
+      box-shadow: 0 0 24px rgba(150, 80, 255, .35);
     }
-    .btn.ghost { background: transparent; color: #e6d39a; }
-    .btn.locked { opacity: .45; }
-    .hint { margin-top: 14px; color: #8f8a80; font-size: 14px; }
-    section { padding: 42px 0; border-top: 1px solid #2a2d42; }
-    h2 { font-weight: 400; letter-spacing: .06em; margin-bottom: 18px; }
+    .btn.ghost {
+      background: rgba(255,255,255,.04);
+      color: #ead9ff;
+      box-shadow: none;
+    }
+    .btn.locked { opacity: .5; }
+    .hint { margin-top: 14px; color: #9b8fb0; font-size: 14px; }
+    section { padding: 42px 0; }
+    h2 { font-weight: 400; letter-spacing: .08em; margin-bottom: 18px; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
     }
     .card {
-      background: #12141e;
-      border: 1px solid #2f334c;
-      padding: 18px;
-      min-height: 140px;
+      padding: 20px 18px 22px;
+      border-radius: 20px;
+      min-height: 150px;
+      position: relative;
+      overflow: hidden;
     }
-    .card h3 { font-weight: 400; margin: 6px 0 8px; }
-    .card p { color: #b7b2a7; line-height: 1.45; }
-    .tag { color: #c8b060; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+    .card:after {
+      content: "";
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      right: 14px;
+      top: 14px;
+      background: linear-gradient(135deg, transparent 48%, rgba(230,210,255,.7) 50%, transparent 52%),
+                  linear-gradient(45deg, transparent 48%, rgba(170,120,255,.55) 50%, transparent 52%);
+      background-size: 42px 42px;
+      opacity: .7;
+    }
+    .card h3 { font-weight: 400; margin: 8px 0; }
+    .card p { color: #cbbfdc; line-height: 1.45; }
+    .tag { color: #d7b8ff; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
     .auth {
-      max-width: 360px;
-      background: #12141e;
-      border: 1px solid #2f334c;
-      padding: 20px;
+      max-width: 380px;
+      padding: 22px;
+      border-radius: 22px;
     }
     .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .tabs button, #logoutBtn {
-      background: #1b1f30;
-      color: #f3efe6;
-      border: 1px solid #3a4060;
+      background: rgba(255,255,255,.05);
+      color: #f4edff;
+      border: 1px solid rgba(214,186,255,.28);
       padding: 8px 12px;
+      border-radius: 999px;
       cursor: pointer;
       font: inherit;
     }
-    .tabs button.active { border-color: #c8b060; }
+    .tabs button.active {
+      border-color: #c9a6ff;
+      box-shadow: 0 0 16px rgba(150,80,255,.25);
+    }
     form { display: flex; flex-direction: column; gap: 10px; }
     label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
     input {
-      background: #0b0d16;
-      color: #f3efe6;
-      border: 1px solid #3a4060;
-      padding: 10px;
+      background: rgba(8,6,16,.7);
+      color: #f4edff;
+      border: 1px solid rgba(214,186,255,.28);
+      padding: 10px 12px;
+      border-radius: 12px;
       font: inherit;
     }
-    .msg { color: #e08080; min-height: 1.2em; }
-    footer { padding-top: 28px; color: #6f6b63; font-size: 12px; }
+    .msg { color: #ff9ad8; min-height: 1.2em; }
+    footer { padding-top: 20px; color: #7d738c; font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header class="nav">
+    <header class="nav glass">
       <a class="logo" href="index.html">ENDLESS VERSES</a>
       <nav>
         <a href="#welt">Welt</a>
@@ -108,12 +165,12 @@
     </header>
 
     <div class="hero">
-      <p class="kicker">2.5D Browser-Game</p>
+      <p class="kicker">Glas · Diamant · Violett</p>
       <h1>Mehrere Welten.<br>Ein Weg dazwischen.</h1>
-      <p class="lead">Die Website ist die Tür. Danach der Hub. Jeder Vers hat eigene Kräfte — nur mit Lizenz.</p>
+      <p class="lead">Schwarzer Grund, violettes Licht, Glas davor. Die Website ist die Tür — danach der Hub.</p>
       <div class="row">
         <a id="playBtn" class="btn locked" href="#konto">Ins Spiel</a>
-        <a class="btn ghost" href="#konto">Account anlegen</a>
+        <a class="btn ghost glass" href="#konto">Account anlegen</a>
       </div>
       <p id="gateHint" class="hint">Zuerst Konto, dann öffnet sich der Hub.</p>
     </div>
@@ -121,24 +178,24 @@
     <section id="welt">
       <h2>So kommst du rein</h2>
       <div class="grid">
-        <article class="card"><p class="tag">01</p><h3>Konto</h3><p>Registrieren oder einloggen. Dein Stand bleibt in diesem Browser.</p></article>
-        <article class="card"><p class="tag">02</p><h3>Hub</h3><p>Neutraler Raum. Laufen, springen, Vers wechseln.</p></article>
-        <article class="card"><p class="tag">03</p><h3>Vers</h3><p>Eigene Welt, eigene Regeln, eigener Look.</p></article>
+        <article class="card glass"><p class="tag">01</p><h3>Konto</h3><p>Registrieren oder einloggen. Stand bleibt in diesem Browser.</p></article>
+        <article class="card glass"><p class="tag">02</p><h3>Hub</h3><p>Neutraler Raum. Laufen, springen, Vers wechseln.</p></article>
+        <article class="card glass"><p class="tag">03</p><h3>Vers</h3><p>Eigene Welt, eigene Regeln, eigener Look.</p></article>
       </div>
     </section>
 
     <section id="verse">
       <h2>Verse</h2>
       <div class="grid">
-        <article class="card"><p class="tag">offen</p><h3>Hub</h3><p>Startwelt. Schon spielbar.</p></article>
-        <article class="card"><p class="tag">test</p><h3>Soul</h3><p>Platzhalter-Vers für Wechsel und Farbe.</p></article>
-        <article class="card"><p class="tag">später</p><h3>Lizenz-Welten</h3><p>Erst wenn die Rechte klar sind.</p></article>
+        <article class="card glass"><p class="tag">offen</p><h3>Hub</h3><p>Startwelt. Schon spielbar.</p></article>
+        <article class="card glass"><p class="tag">test</p><h3>Soul</h3><p>Platzhalter-Vers für Wechsel und Farbe.</p></article>
+        <article class="card glass"><p class="tag">später</p><h3>Lizenz-Welten</h3><p>Erst wenn die Rechte klar sind.</p></article>
       </div>
     </section>
 
     <section id="konto">
       <h2>Konto</h2>
-      <div class="auth">
+      <div class="auth glass">
         <div class="tabs">
           <button type="button" id="tabLogin" class="active">Login</button>
           <button type="button" id="tabRegister">Registrieren</button>
