@@ -9,9 +9,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
-    body {
-      background: #07060c; color: #f3edff; font-family: Syne, sans-serif; overflow: hidden;
-    }
+    body { background: #07060c; color: #f3edff; font-family: Syne, sans-serif; overflow: hidden; }
     .fx {
       position: fixed; inset: 0; pointer-events: none;
       background:
@@ -34,8 +32,8 @@
       font: 700 20px Syne, sans-serif; text-align: left; cursor: pointer; padding: 8px 0; text-decoration: none;
     }
     nav.side button:hover, nav.side a:hover { color: #fff; text-shadow: 0 0 18px rgba(180,110,255,.8); }
-    .stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 18px; }
-    #preview { width: 360px; height: 300px; }
+    .stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 10px; }
+    #preview { width: min(420px, 42vw); height: min(460px, 58vh); }
     .cname { font-family: Cinzel, serif; letter-spacing: .22em; margin-bottom: 8px; }
     #startBtn {
       min-width: 280px; margin-top: 8px; padding: 16px 26px;
@@ -81,13 +79,19 @@
     .slot.on, .item.on { border-color: #f0b429; }
     .slot small { display: block; color: #9b8fb8; font-size: 10px; letter-spacing: .14em; }
     .load-grid { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
-    #play { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 1; }
-    #play.on { display: flex; }
-    canvas#game { width: min(1100px, 96vw); height: auto; border: 1px solid rgba(214,186,255,.16); }
-    #hud { width: min(1100px,96vw); display: flex; justify-content: space-between; align-items: center; font-size: 12px; letter-spacing: .12em; }
-    #stam { width: 140px; height: 6px; background: #1a1620; border: 1px solid rgba(214,186,255,.2); }
+    #play { display: none; position: fixed; inset: 0; z-index: 4; background: #09080f; }
+    #play.on { display: block; }
+    canvas#game { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #hud {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 22px; font-size: 12px; letter-spacing: .12em;
+      background: linear-gradient(180deg, rgba(0,0,0,.45), transparent);
+    }
+    #stam { width: 160px; height: 7px; background: #1a1620; border: 1px solid rgba(214,186,255,.2); }
     #stamHud { height: 100%; width: 100%; background: linear-gradient(90deg, #8a6bff, #e0c2ff); }
     #hud button { background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3); padding: 6px 10px; cursor: pointer; font: inherit; }
+    #hint { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: #8a7aa8; font-size: 12px; z-index: 5; }
     button:disabled { opacity: .45; cursor: not-allowed; }
     .stars { color: #ffd36a; letter-spacing: 2px; margin: 8px 0; }
   </style>
@@ -110,7 +114,7 @@
       </nav>
       <div class="stage">
         <div class="cname">SCHWARZER NINJA</div>
-        <canvas id="preview" width="360" height="300"></canvas>
+        <canvas id="preview" width="420" height="460"></canvas>
         <button type="button" id="startBtn">SPIELEN</button>
       </div>
       <div class="meta">
@@ -151,8 +155,8 @@
       <div id="stam"><div id="stamHud"></div></div>
       <button type="button" id="toMenu">Hauptmenü</button>
     </div>
-    <canvas id="game" width="960" height="420"></canvas>
-    <p style="color:#8a7aa8;font-size:12px">A/D laufen · Leertaste sprung · F werfen · Q dash · R parry</p>
+    <canvas id="game" width="1280" height="720"></canvas>
+    <p id="hint">A/D laufen · Leertaste Sprung · F werfen · Q Dash · R Parry</p>
   </div>
 
   <script src="js/auth.js"></script>
