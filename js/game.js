@@ -2,21 +2,14 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   const verseLabel = document.getElementById("verseName");
+  const menu = document.getElementById("menu");
   const user = window.EVAuth && EVAuth.current();
   const SAVE_KEY = "endless-verses-v01-" + (user ? user.name : "guest");
 
   const keys = {};
-  const player = {
-    x: 200,
-    y: 360,
-    vx: 0,
-    vy: 0,
-    w: 28,
-    h: 48,
-    onGround: false
-  };
-
+  const player = { x: 200, y: 360, vx: 0, vy: 0, w: 28, h: 48, onGround: false };
   let verseId = "hub";
+  let paused = false;
   const gravity = 1800;
   const speed = 240;
   const jump = 620;
@@ -38,17 +31,29 @@
   }
 
   function save() {
-    localStorage.setItem(
-      SAVE_KEY,
-      JSON.stringify({ x: player.x, y: player.y, verse: verseId })
-    );
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ x: player.x, y: player.y, verse: verseId }));
+  }
+
+  function openMenu() {
+    paused = true;
+    menu.classList.add("on");
+  }
+  function closeMenu() {
+    paused = false;
+    menu.classList.remove("on");
+    last = performance.now();
   }
 
   window.addEventListener("keydown", (e) => {
-    keys[e.code] = true;
-    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) {
+    if (e.code === "Escape") {
       e.preventDefault();
+      if (paused) closeMenu();
+      else openMenu();
+      return;
     }
+    if (paused) return;
+    keys[e.code] = true;
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) e.preventDefault();
     if (e.code === "Digit1") verseId = "hub";
     if (e.code === "Digit2") verseId = "soul";
   });
@@ -56,44 +61,54 @@
     keys[e.code] = false;
   });
 
+  document.getElementById("menuBtn").onclick = openMenu;
+  document.getElementById("resumeBtn").onclick = closeMenu;
+  document.getElementById("verseHub").onclick = function () { verseId = "hub"; save(); };
+  document.getElementById("verseSoul").onclick = function () { verseId = "soul"; save(); };
+  document.getElementById("saveBtn").onclick = function () {
+    save();
+    this.textContent = "Gespeichert";
+    const btn = this;
+    setTimeout(function () { btn.textContent = "Speichern"; }, 900);
+  };
+  document.getElementById("logoutPlay").onclick = function () {
+    save();
+    EVAuth.logout();
+    location.href = "index.html";
+  };
+
   let last = performance.now();
   let saveTimer = 0;
 
   function tick(now) {
     const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
-
-    const left = keys.ArrowLeft || keys.KeyA;
-    const right = keys.ArrowRight || keys.KeyD;
-    const wantJump = keys.Space || keys.KeyW || keys.ArrowUp;
-
-    player.vx = (right ? speed : 0) - (left ? speed : 0);
-    player.vy += gravity * dt;
-    if (wantJump && player.onGround) {
-      player.vy = -jump;
-      player.onGround = false;
+    if (!paused) {
+      const left = keys.ArrowLeft || keys.KeyA;
+      const right = keys.ArrowRight || keys.KeyD;
+      const wantJump = keys.Space || keys.KeyW || keys.ArrowUp;
+      player.vx = (right ? speed : 0) - (left ? speed : 0);
+      player.vy += gravity * dt;
+      if (wantJump && player.onGround) {
+        player.vy = -jump;
+        player.onGround = false;
+      }
+      player.x += player.vx * dt;
+      player.y += player.vy * dt;
+      if (player.x < 20) player.x = 20;
+      if (player.x > 940) player.x = 940;
+      if (player.y + player.h >= floor) {
+        player.y = floor - player.h;
+        player.vy = 0;
+        player.onGround = true;
+      } else {
+        player.onGround = false;
+      }
+      saveTimer += dt;
+      if (saveTimer > 1) { saveTimer = 0; save(); }
     }
-
-    player.x += player.vx * dt;
-    player.y += player.vy * dt;
-    if (player.x < 20) player.x = 20;
-    if (player.x > 940) player.x = 940;
-
-    if (player.y + player.h >= floor) {
-      player.y = floor - player.h;
-      player.vy = 0;
-      player.onGround = true;
-    } else {
-      player.onGround = false;
-    }
-
     draw();
     verseLabel.textContent = verse().name;
-    saveTimer += dt;
-    if (saveTimer > 1) {
-      saveTimer = 0;
-      save();
-    }
     requestAnimationFrame(tick);
   }
 
