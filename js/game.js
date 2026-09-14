@@ -53,36 +53,7 @@
   document.getElementById("logoutPlay").onclick = function () { save(); EVAuth.logout(); location.href = "index.html"; };
 
   function world() {
-    const g = ctx.createLinearGradient(0, 0, 0, floor);
-    g.addColorStop(0, "#0a0712"); g.addColorStop(0.4, "#1a1030"); g.addColorStop(0.72, "#3a1848"); g.addColorStop(1, "#5a2a18");
-    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    const chroma = ctx.createLinearGradient(0, 80, W, floor);
-    chroma.addColorStop(0, "rgba(80,40,255,0.08)"); chroma.addColorStop(0.5, "rgba(180,80,255,0.05)"); chroma.addColorStop(1, "rgba(255,140,60,0.1)");
-    ctx.fillStyle = chroma; ctx.fillRect(0, 0, W, floor);
-    for (let i = -1; i < 9; i++) {
-      const px = ((i * 260 - cam * 0.2) % (W + 260));
-      ctx.fillStyle = "rgba(40,24,70,0.35)"; ctx.fillRect(px, 50, 90, floor - 50);
-    }
-    for (let i = -1; i < 8; i++) {
-      const px = ((i * 300 - cam * 0.55) % (W + 300));
-      const flick = 0.35 + Math.sin(tWorld * 7 + i) * 0.2;
-      ctx.fillStyle = "#16101c"; ctx.fillRect(px, 58, 56, floor - 58);
-      const rim = ctx.createLinearGradient(px, 58, px + 56, 58);
-      rim.addColorStop(0, "rgba(180,120,255,0.35)"); rim.addColorStop(0.4, "rgba(255,255,255,0)"); rim.addColorStop(1, "rgba(255,160,60,0.25)");
-      ctx.fillStyle = rim; ctx.fillRect(px, 58, 56, floor - 58);
-      ctx.fillStyle = "#2a2234"; ctx.fillRect(px - 10, 50, 76, 16); ctx.fillRect(px - 12, floor - 16, 80, 16);
-      EV.kit.draw(ctx, "flame_01", px + 28, 92, 36, 0.35 + flick * 0.4, tWorld);
-      EV.kit.draw(ctx, "light_01", px + 28, 110, 120, 0.12 + flick * 0.08, 0);
-    }
-    ctx.fillStyle = "#120e10"; ctx.fillRect(0, floor, W, H - floor);
-    const sheen = ctx.createLinearGradient(0, floor, 0, H);
-    sheen.addColorStop(0, "rgba(200,160,255,0.18)"); sheen.addColorStop(0.15, "rgba(255,170,70,0.08)"); sheen.addColorStop(1, "rgba(0,0,0,0.5)");
-    ctx.fillStyle = sheen; ctx.fillRect(0, floor, W, H - floor);
-    ctx.fillStyle = "rgba(220,180,255,0.35)"; ctx.fillRect(0, floor, W, 2);
-    ctx.fillStyle = "rgba(255,170,70,0.25)"; ctx.fillRect(0, floor + 2, W, 1);
-    const vig = ctx.createRadialGradient(W * 0.5, H * 0.52, H * 0.12, W * 0.5, H * 0.5, H * 0.78);
-    vig.addColorStop(0, "rgba(0,0,0,0)"); vig.addColorStop(1, "rgba(0,0,0,0.55)");
-    ctx.fillStyle = vig; ctx.fillRect(0, 0, W, H);
+    EVMap.draw(ctx, { W: W, H: H, floor: floor, cam: cam, t: tWorld });
   }
 
   function hurtPlayer(dmg, x, y) {
