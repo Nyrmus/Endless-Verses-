@@ -16,15 +16,10 @@
     tabRegister.classList.toggle("active", !loginOn);
     loginForm.classList.toggle("off", !loginOn);
     registerForm.classList.toggle("off", loginOn);
-    loginForm.querySelectorAll("input").forEach((el) => {
-      el.required = loginOn;
-      el.disabled = !loginOn;
-    });
-    registerForm.querySelectorAll("input").forEach((el) => {
-      el.required = !loginOn;
-      el.disabled = loginOn;
-    });
     if (msg) msg.textContent = "";
+    const focusId = loginOn ? "loginName" : "regName";
+    const el = document.getElementById(focusId);
+    if (el && !panel.hidden) el.focus();
   }
 
   function show() {
@@ -53,18 +48,27 @@
     e.preventDefault();
     e.stopPropagation();
     panel.hidden = !panel.hidden;
-  });
-  document.addEventListener("click", function (e) {
-    if (!panel.hidden && !e.target.closest(".account-wrap")) panel.hidden = true;
+    if (!panel.hidden && !EVAuth.current()) {
+      setMode(tabRegister.classList.contains("active") ? "register" : "login");
+    }
   });
 
   tabLogin.addEventListener("click", function (e) {
     e.preventDefault();
+    e.stopPropagation();
     setMode("login");
   });
   tabRegister.addEventListener("click", function (e) {
     e.preventDefault();
+    e.stopPropagation();
     setMode("register");
+  });
+
+  panel.addEventListener("mousedown", function (e) {
+    e.stopPropagation();
+  });
+  panel.addEventListener("click", function (e) {
+    e.stopPropagation();
   });
 
   loginForm.addEventListener("submit", async function (e) {
