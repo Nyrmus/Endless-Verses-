@@ -5,79 +5,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Endless Verses</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Syne:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Syne:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh; color: #f4edff; font-family: Syne, sans-serif;
-      background: #04030a;
-    }
-    .chroma {
-      position: fixed; inset: -20%; pointer-events: none;
+    body { min-height: 100vh; background: #07060c; color: #f4edff; font-family: Syne, sans-serif; overflow: hidden; }
+    .bg {
+      position: fixed; inset: 0;
       background:
-        radial-gradient(40% 35% at 18% 8%, rgba(181,107,255,.45), transparent 58%),
-        radial-gradient(32% 28% at 82% 12%, rgba(80,220,255,.14), transparent 55%);
-      filter: blur(10px);
+        radial-gradient(50% 60% at 70% 40%, rgba(140,70,255,.28), transparent 60%),
+        radial-gradient(40% 40% at 10% 80%, rgba(40,20,80,.5), transparent 60%),
+        linear-gradient(180deg, #0b0914, #05040a);
     }
-    #menu, #play {
-      position: relative; z-index: 1; min-height: 100vh;
-    }
-    #play { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+    #lobby, #play { position: relative; z-index: 1; min-height: 100vh; }
+    #play { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
     #play.on { display: flex; }
-    #menu.off { display: none; }
-    #menu {
-      display: flex; align-items: center; justify-content: center;
+    #lobby.off { display: none; }
+    #lobby { display: grid; grid-template-columns: 220px 1fr 280px; min-height: 100vh; }
+    .col { padding: 28px 22px; display: flex; flex-direction: column; gap: 10px; }
+    .col.side button, .col.side a {
+      text-align: left; background: transparent; border: 0; color: #cbb8ef;
+      font: 700 18px/1.2 Syne, sans-serif; cursor: pointer; padding: 10px 0; text-decoration: none;
     }
-    #menuCard {
-      width: min(420px, 92vw); text-align: center; padding: 36px 28px;
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
-      border: 1px solid rgba(214,186,255,.3);
+    .col.side button:hover, .col.side a:hover { color: #fff; text-shadow: 0 0 18px rgba(181,107,255,.8); }
+    .stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 48px; }
+    .man {
+      width: 160px; height: 280px; position: relative; margin-bottom: 28px;
     }
-    #menuCard h1 {
-      font-family: "Instrument Serif", serif; font-weight: 400;
-      font-size: clamp(42px, 8vw, 64px); line-height: .9; margin-bottom: 8px;
+    .man i {
+      position: absolute; background: linear-gradient(180deg, #d8c6ff, #8a6ad8);
+      box-shadow: 0 0 24px rgba(160,90,255,.35);
     }
-    #menuWho { color: #b7a8d4; margin-bottom: 24px; }
-    #menuCard button, #menuCard a.item {
-      display: block; width: 100%; margin: 8px 0; padding: 13px 14px;
-      border-radius: 999px; border: 1px solid rgba(214,186,255,.35);
-      background: rgba(255,255,255,.04); color: #f4edff;
-      font: inherit; cursor: pointer; text-decoration: none;
+    .man .head { width: 54px; height: 54px; border-radius: 50%; left: 53px; top: 8px; }
+    .man .body { width: 70px; height: 90px; left: 45px; top: 66px; border-radius: 10px; }
+    .man .arm-l, .man .arm-r { width: 18px; height: 80px; top: 70px; border-radius: 8px; }
+    .man .arm-l { left: 24px; transform: rotate(8deg); }
+    .man .arm-r { right: 24px; transform: rotate(-8deg); }
+    .man .leg-l, .man .leg-r { width: 22px; height: 100px; top: 154px; border-radius: 8px; }
+    .man .leg-l { left: 52px; }
+    .man .leg-r { right: 52px; }
+    #startBtn {
+      min-width: 280px; padding: 16px 28px; font: 800 28px Syne, sans-serif;
+      letter-spacing: .12em; border: 0; border-radius: 6px; cursor: pointer;
+      background: linear-gradient(180deg, #ffe08a, #f0b429); color: #1a1204;
+      box-shadow: 0 10px 40px rgba(240,180,41,.35);
     }
-    #menuCard button.primary {
-      background: linear-gradient(180deg, #e0c2ff, #b56bff 40%, #6d2bff);
-      color: #14081f; border: 0; font-weight: 700;
+    #startBtn:hover { filter: brightness(1.08); }
+    .right h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 28px; margin-bottom: 8px; }
+    #dollStats { list-style: none; font-size: 13px; color: #cbb8ef; }
+    #dollStats li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    #dollStats em { font-style: normal; color: #fff; }
+    #who { position: absolute; top: 24px; right: 24px; color: #b7a8d4; z-index: 2; }
+    #locker {
+      display: none; position: fixed; inset: 0; z-index: 8;
+      background: rgba(4,3,10,.86); padding: 24px;
     }
-    #versePick { display: flex; gap: 8px; margin: 10px 0 4px; }
-    #versePick button { flex: 1; margin: 0; }
-    #versePick button.active { box-shadow: 0 0 0 1px #c9a6ff; }
-    canvas { width: min(960px, 100%); height: auto; background: #0d1020; border: 1px solid rgba(214,186,255,.25); }
-    #hud {
-      width: min(960px, 100%); display: flex; justify-content: space-between;
-      color: #b7a8d4; font-size: 13px;
+    #locker.on { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
+    #slots, #items { overflow: auto; }
+    .slot, .item {
+      display: block; width: 100%; text-align: left; margin: 0 0 8px;
+      padding: 12px 14px; border-radius: 12px; cursor: pointer; font: inherit; color: #fff;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(214,186,255,.2);
     }
-    #hud button {
-      background: transparent; color: #e3c9ff; border: 1px solid rgba(214,186,255,.3);
-      padding: 6px 10px; border-radius: 999px; cursor: pointer; font: inherit;
+    .slot small { display: block; color: #b7a8d4; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+    .slot.on, .item.on { border-color: #f0b429; box-shadow: 0 0 16px rgba(240,180,41,.25); }
+    #closeLocker {
+      position: absolute; top: 18px; right: 18px;
+      background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3);
+      padding: 8px 12px; border-radius: 999px; cursor: pointer; font: inherit;
+    }
+    canvas { width: min(960px, 100%); height: auto; border: 1px solid rgba(214,186,255,.2); }
+    #hud { width: min(960px,100%); display: flex; justify-content: space-between; color: #b7a8d4; }
+    #hud button { background: transparent; color: #e3c9ff; border: 1px solid rgba(214,186,255,.3); padding: 6px 10px; border-radius: 999px; cursor: pointer; font: inherit; }
+    @media (max-width: 900px) {
+      #lobby { grid-template-columns: 1fr; }
+      .right { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="chroma"></div>
+  <div class="bg"></div>
+  <div id="who"></div>
 
-  <div id="menu">
-    <div id="menuCard">
-      <h1>Endless<br>Verses</h1>
-      <p id="menuWho"></p>
-      <button type="button" class="primary" id="startBtn">Spielen</button>
-      <div id="versePick">
-        <button type="button" class="active" id="pickHub">Hub</button>
-        <button type="button" id="pickSoul">Soul</button>
-      </div>
-      <a class="item" href="index.html">Zurück zur Website</a>
+  <div id="lobby">
+    <div class="col side">
+      <button type="button" id="startSide">Spielen</button>
+      <button type="button" id="openLocker">Ausrüstung</button>
+      <button type="button" id="pickHub">Hub</button>
+      <button type="button" id="pickSoul">Soul</button>
+      <a href="index.html">Website</a>
       <button type="button" id="logoutPlay">Logout</button>
     </div>
+    <div class="stage">
+      <div class="man" aria-hidden="true">
+        <i class="head"></i><i class="body"></i><i class="arm-l"></i><i class="arm-r"></i><i class="leg-l"></i><i class="leg-r"></i>
+      </div>
+      <button type="button" id="startBtn">SPIELEN</button>
+    </div>
+    <div class="col right">
+      <h2>Loadout</h2>
+      <ul id="dollStats"></ul>
+    </div>
+  </div>
+
+  <div id="locker">
+    <button type="button" id="closeLocker">Zurück</button>
+    <div id="slots"></div>
+    <div id="items"></div>
   </div>
 
   <div id="play">
@@ -86,16 +119,17 @@
       <button type="button" id="toMenu">Hauptmenü</button>
     </div>
     <canvas id="game" width="960" height="540"></canvas>
-    <p style="color:#7d738c;font-size:13px">A/D laufen · Leertaste springen</p>
   </div>
 
   <script src="js/auth.js"></script>
   <script>
     if (!EVAuth.current()) location.href = "index.html";
-    else document.getElementById("menuWho").textContent = EVAuth.current().name;
+    else document.getElementById("who").textContent = EVAuth.current().name;
   </script>
   <script src="js/verses/hub.js"></script>
   <script src="js/verses/soul.js"></script>
+  <script src="js/loadout.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/lobby.js"></script>
 </body>
 </html>
