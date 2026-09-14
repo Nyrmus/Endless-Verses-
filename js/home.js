@@ -10,6 +10,23 @@
   const panel = document.getElementById("accountPanel");
   const toggle = document.getElementById("accountToggle");
 
+  function setMode(mode) {
+    const loginOn = mode === "login";
+    tabLogin.classList.toggle("active", loginOn);
+    tabRegister.classList.toggle("active", !loginOn);
+    loginForm.classList.toggle("off", !loginOn);
+    registerForm.classList.toggle("off", loginOn);
+    loginForm.querySelectorAll("input").forEach((el) => {
+      el.required = loginOn;
+      el.disabled = !loginOn;
+    });
+    registerForm.querySelectorAll("input").forEach((el) => {
+      el.required = !loginOn;
+      el.disabled = loginOn;
+    });
+    if (msg) msg.textContent = "";
+  }
+
   function show() {
     const user = EVAuth.current();
     if (user) {
@@ -17,42 +34,40 @@
       logoutBtn.hidden = false;
       playBtn.classList.remove("locked");
       playBtn.setAttribute("href", "play.html");
-      loginForm.style.display = "none";
-      registerForm.style.display = "none";
-      tabLogin.style.display = "none";
-      tabRegister.style.display = "none";
+      loginForm.classList.add("off");
+      registerForm.classList.add("off");
+      tabLogin.classList.add("off");
+      tabRegister.classList.add("off");
     } else {
       sessionEl.textContent = "Konto";
       logoutBtn.hidden = true;
       playBtn.classList.add("locked");
       playBtn.setAttribute("href", "#top");
-      tabLogin.style.display = "";
-      tabRegister.style.display = "";
-      loginForm.style.display = "flex";
-      registerForm.style.display = "none";
+      tabLogin.classList.remove("off");
+      tabRegister.classList.remove("off");
+      setMode("login");
     }
   }
 
-  toggle.onclick = function () {
+  toggle.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     panel.hidden = !panel.hidden;
-  };
+  });
+  document.addEventListener("click", function (e) {
+    if (!panel.hidden && !e.target.closest(".account-wrap")) panel.hidden = true;
+  });
 
-  tabLogin.onclick = function () {
-    tabLogin.classList.add("active");
-    tabRegister.classList.remove("active");
-    loginForm.style.display = "flex";
-    registerForm.style.display = "none";
-    msg.textContent = "";
-  };
-  tabRegister.onclick = function () {
-    tabRegister.classList.add("active");
-    tabLogin.classList.remove("active");
-    registerForm.style.display = "flex";
-    loginForm.style.display = "none";
-    msg.textContent = "";
-  };
+  tabLogin.addEventListener("click", function (e) {
+    e.preventDefault();
+    setMode("login");
+  });
+  tabRegister.addEventListener("click", function (e) {
+    e.preventDefault();
+    setMode("register");
+  });
 
-  loginForm.onsubmit = async function (e) {
+  loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     try {
       await EVAuth.login(
@@ -64,9 +79,9 @@
     } catch (err) {
       msg.textContent = err.message;
     }
-  };
+  });
 
-  registerForm.onsubmit = async function (e) {
+  registerForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     try {
       await EVAuth.register(
@@ -78,12 +93,13 @@
     } catch (err) {
       msg.textContent = err.message;
     }
-  };
+  });
 
-  logoutBtn.onclick = function () {
+  logoutBtn.addEventListener("click", function () {
     EVAuth.logout();
     show();
-  };
+  });
 
+  if (window.EVAuth && EVAuth.seedOwner) EVAuth.seedOwner();
   show();
 })();
