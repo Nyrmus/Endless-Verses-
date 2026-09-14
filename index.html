@@ -32,33 +32,36 @@
       box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16);
       backdrop-filter: blur(16px);
     }
-    .nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 18px; flex-wrap: wrap; }
+    .nav {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; padding: 14px 18px; border-radius: 18px; flex-wrap: wrap;
+      position: relative;
+    }
     .logo { letter-spacing: .34em; font-size: 12px; color: #f7f1ff; }
     .nav nav { display: flex; gap: 16px; }
-    .hero { padding: 56px 0 28px; text-align: center; }
+    .account-wrap { position: relative; }
+    #accountToggle {
+      background: rgba(255,255,255,.05); color: #f4edff;
+      border: 1px solid rgba(214,186,255,.35); padding: 8px 12px;
+      border-radius: 999px; cursor: pointer; font: inherit;
+    }
+    #accountPanel {
+      position: absolute; right: 0; top: calc(100% + 10px);
+      width: 280px; padding: 14px; border-radius: 16px; z-index: 5;
+    }
+    .hero { padding: 72px 0 20px; text-align: center; }
     h1 {
       font-weight: 400; letter-spacing: .12em;
       font-size: clamp(34px, 7vw, 58px);
       text-shadow: 0 0 28px rgba(160,90,255,.4);
       margin-bottom: 22px;
     }
-    .shot {
-      width: min(720px, 100%);
-      margin: 0 auto 22px;
-      border-radius: 18px;
-      overflow: hidden;
-      aspect-ratio: 16/9;
-      position: relative;
-      background: #0b0a14;
-    }
-    .shot svg { width: 100%; height: 100%; display: block; }
     .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .btn {
       display: inline-flex; align-items: center; padding: 12px 18px; border-radius: 999px;
       border: 1px solid rgba(214,186,255,.5); background: linear-gradient(180deg,#c9a6ff,#8a4dff);
       color: #14081f; cursor: pointer; font: inherit; box-shadow: 0 0 24px rgba(150,80,255,.35);
     }
-    .btn.ghost { background: rgba(255,255,255,.04); color: #ead9ff; box-shadow: none; }
     .btn.locked { opacity: .5; }
     .stars { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
     .stars button {
@@ -74,8 +77,8 @@
     .diamond { width: 150px; height: 150px; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; }
     .diamond-inner { transform: rotate(-45deg); text-align: center; }
     .diamond .tag { display: block; color: #d7b8ff; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; }
-    .auth, .box { max-width: 520px; padding: 20px; border-radius: 22px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .box { max-width: 520px; padding: 20px; border-radius: 22px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
     .tabs button, #logoutBtn, .cmt-actions button {
       background: rgba(255,255,255,.05); color: #f4edff; border: 1px solid rgba(214,186,255,.28);
       padding: 7px 11px; border-radius: 999px; cursor: pointer; font: inherit;
@@ -85,7 +88,7 @@
     label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
     input, textarea {
       background: rgba(8,6,16,.7); color: #f4edff; border: 1px solid rgba(214,186,255,.28);
-      padding: 10px 12px; border-radius: 12px; font: inherit;
+      padding: 10px 12px; border-radius: 12px; font: inherit; width: 100%;
     }
     textarea { min-height: 80px; resize: vertical; }
     .msg, #commentErr { color: #ff9ad8; min-height: 1.2em; }
@@ -102,44 +105,44 @@
     .thread { margin: 10px 0 0 16px; }
     .thread summary { cursor: pointer; color: #c9a6ff; margin-bottom: 8px; }
     .note { padding: 8px 12px; margin-bottom: 8px; border-radius: 12px; background: rgba(123,61,255,.2); }
-    .idea { margin-bottom: 10px; }
     footer { padding-top: 20px; color: #7d738c; font-size: 12px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="wrap" id="top">
     <header class="nav glass">
       <a class="logo" href="index.html">ENDLESS VERSES</a>
       <nav>
         <a href="#socials">Socials</a>
         <a href="#comments-sec">Kommentare</a>
-        <a href="#konto">Konto</a>
       </nav>
-      <div>
-        <span id="session">Gast</span>
-        <button type="button" id="logoutBtn" hidden>Logout</button>
+      <div class="account-wrap">
+        <button type="button" id="accountToggle"><span id="session">Konto</span></button>
+        <div id="accountPanel" class="glass" hidden>
+          <div class="tabs">
+            <button type="button" id="tabLogin" class="active">Login</button>
+            <button type="button" id="tabRegister">Registrieren</button>
+          </div>
+          <form id="loginForm">
+            <label>Name <input id="loginName" required></label>
+            <label>Passwort <input id="loginPass" type="password" required></label>
+            <button class="btn" type="submit">Einloggen</button>
+          </form>
+          <form id="registerForm" style="display:none">
+            <label>Name <input id="regName" minlength="3"></label>
+            <label>Passwort <input id="regPass" type="password" minlength="4"></label>
+            <button class="btn" type="submit">Account erstellen</button>
+          </form>
+          <p id="msg" class="msg"></p>
+          <button type="button" id="logoutBtn" hidden>Logout</button>
+        </div>
       </div>
     </header>
 
     <div class="hero">
       <h1>ENDLESS VERSES</h1>
-      <div class="shot glass">
-        <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" aria-label="Endless Verses">
-          <rect width="960" height="540" fill="#0b1020"/>
-          <rect y="430" width="960" height="110" fill="#2a2740"/>
-          <rect y="430" width="960" height="3" fill="#c8b060"/>
-          <rect x="120" y="300" width="28" height="28" fill="#1a1d2e"/>
-          <rect x="260" y="270" width="36" height="36" fill="#1a1d2e"/>
-          <rect x="420" y="250" width="48" height="48" fill="#1a1d2e"/>
-          <rect x="600" y="230" width="58" height="58" fill="#1a1d2e"/>
-          <rect x="760" y="210" width="68" height="68" fill="#1a1d2e"/>
-          <ellipse cx="734" cy="436" rx="18" ry="6" fill="#000" opacity=".35"/>
-          <rect x="720" y="382" width="28" height="48" fill="#e8e4d8"/>
-          <rect x="726" y="392" width="16" height="8" fill="#c8b060"/>
-        </svg>
-      </div>
       <div class="row">
-        <a id="playBtn" class="btn locked" href="#konto">Ins Spiel</a>
+        <a id="playBtn" class="btn locked" href="#top">Ins Spiel</a>
       </div>
       <div class="stars" aria-label="Bewerten">
         <button type="button" data-star="1"><span>1</span></button>
@@ -178,27 +181,6 @@
         <p id="commentErr"></p>
       </form>
       <div id="comments"></div>
-    </section>
-
-    <section id="konto">
-      <h2>Konto</h2>
-      <div class="auth glass">
-        <div class="tabs">
-          <button type="button" id="tabLogin" class="active">Login</button>
-          <button type="button" id="tabRegister">Registrieren</button>
-        </div>
-        <form id="loginForm">
-          <label>Name <input id="loginName" required></label>
-          <label>Passwort <input id="loginPass" type="password" required></label>
-          <button class="btn" type="submit">Einloggen</button>
-        </form>
-        <form id="registerForm" hidden>
-          <label>Name <input id="regName" required minlength="3"></label>
-          <label>Passwort <input id="regPass" type="password" required minlength="4"></label>
-          <button class="btn" type="submit">Account erstellen</button>
-        </form>
-        <p id="msg" class="msg"></p>
-      </div>
     </section>
     <footer>Endless Verses</footer>
   </div>

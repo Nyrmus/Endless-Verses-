@@ -7,7 +7,8 @@
   const sessionEl = document.getElementById("session");
   const playBtn = document.getElementById("playBtn");
   const logoutBtn = document.getElementById("logoutBtn");
-  const gateHint = document.getElementById("gateHint");
+  const panel = document.getElementById("accountPanel");
+  const toggle = document.getElementById("accountToggle");
 
   function show() {
     const user = EVAuth.current();
@@ -16,28 +17,38 @@
       logoutBtn.hidden = false;
       playBtn.classList.remove("locked");
       playBtn.setAttribute("href", "play.html");
-      gateHint.textContent = "Eingeloggt. Ins Spiel öffnet den Hub.";
+      loginForm.style.display = "none";
+      registerForm.style.display = "none";
+      tabLogin.style.display = "none";
+      tabRegister.style.display = "none";
     } else {
-      sessionEl.textContent = "Gast";
+      sessionEl.textContent = "Konto";
       logoutBtn.hidden = true;
       playBtn.classList.add("locked");
-      playBtn.setAttribute("href", "#konto");
-      gateHint.textContent = "Zuerst registrieren oder einloggen, dann geht's in den Hub.";
+      playBtn.setAttribute("href", "#top");
+      tabLogin.style.display = "";
+      tabRegister.style.display = "";
+      loginForm.style.display = "flex";
+      registerForm.style.display = "none";
     }
   }
+
+  toggle.onclick = function () {
+    panel.hidden = !panel.hidden;
+  };
 
   tabLogin.onclick = function () {
     tabLogin.classList.add("active");
     tabRegister.classList.remove("active");
-    loginForm.hidden = false;
-    registerForm.hidden = true;
+    loginForm.style.display = "flex";
+    registerForm.style.display = "none";
     msg.textContent = "";
   };
   tabRegister.onclick = function () {
     tabRegister.classList.add("active");
     tabLogin.classList.remove("active");
-    registerForm.hidden = false;
-    loginForm.hidden = true;
+    registerForm.style.display = "flex";
+    loginForm.style.display = "none";
     msg.textContent = "";
   };
 
@@ -49,7 +60,7 @@
         document.getElementById("loginPass").value
       );
       show();
-      location.href = "play.html";
+      panel.hidden = true;
     } catch (err) {
       msg.textContent = err.message;
     }
@@ -63,7 +74,7 @@
         document.getElementById("regPass").value
       );
       show();
-      location.href = "play.html";
+      panel.hidden = true;
     } catch (err) {
       msg.textContent = err.message;
     }
