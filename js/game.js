@@ -2,7 +2,8 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   const verseLabel = document.getElementById("verseName");
-  const SAVE_KEY = "endless-verses-v01";
+  const user = window.EVAuth && EVAuth.current();
+  const SAVE_KEY = "endless-verses-v01-" + (user ? user.name : "guest");
 
   const keys = {};
   const player = {
@@ -75,7 +76,6 @@
 
     player.x += player.vx * dt;
     player.y += player.vy * dt;
-
     if (player.x < 20) player.x = 20;
     if (player.x > 940) player.x = 940;
 
@@ -89,7 +89,6 @@
 
     draw();
     verseLabel.textContent = verse().name;
-
     saveTimer += dt;
     if (saveTimer > 1) {
       saveTimer = 0;
@@ -106,7 +105,6 @@
     const v = verse();
     ctx.fillStyle = rgb(v.sky, 1);
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     for (let i = 0; i < 6; i++) {
       const z = 0.25 + i * 0.12;
       ctx.fillStyle = rgb(v.fog, 0.18 + i * 0.05);
@@ -115,17 +113,14 @@
       ctx.fillStyle = rgb(v.accent, 0.08);
       ctx.fillRect(80 + i * 140, y - 70 * z, 70 * z, 70 * z);
     }
-
     ctx.fillStyle = rgb(v.ground, 1);
     ctx.fillRect(0, floor, canvas.width, canvas.height - floor);
     ctx.fillStyle = rgb(v.accent, 0.35);
     ctx.fillRect(0, floor, canvas.width, 3);
-
     ctx.fillStyle = "rgba(0,0,0,0.35)";
     ctx.beginPath();
     ctx.ellipse(player.x + player.w / 2, floor + 6, 18, 6, 0, 0, Math.PI * 2);
     ctx.fill();
-
     ctx.fillStyle = "#e8e4d8";
     ctx.fillRect(player.x, player.y, player.w, player.h);
     ctx.fillStyle = rgb(v.accent, 1);

@@ -6,19 +6,38 @@
   <title>Endless Verses</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-  <div id="wrap">
-    <header>
-      <h1>ENDLESS VERSES</h1>
-      <p id="verseName">Hub</p>
-    </header>
-    <canvas id="game" width="960" height="540"></canvas>
-    <footer>
-      A/D laufen · Leertaste springen · 1 Hub · 2 Soul
-    </footer>
-  </div>
-  <script src="js/verses/hub.js"></script>
-  <script src="js/verses/soul.js"></script>
-  <script src="js/game.js"></script>
+<body class="home">
+  <main class="panel">
+    <p class="kicker">2.5D Multi-Verse</p>
+    <h1>ENDLESS VERSES</h1>
+    <p id="session" class="session">Nicht eingeloggt</p>
+
+    <div class="tabs">
+      <button type="button" id="tabLogin" class="active">Login</button>
+      <button type="button" id="tabRegister">Registrieren</button>
+    </div>
+
+    <form id="loginForm">
+      <label>Name <input id="loginName" autocomplete="username" required /></label>
+      <label>Passwort <input id="loginPass" type="password" autocomplete="current-password" required /></label>
+      <button type="submit">Einloggen</button>
+    </form>
+
+    <form id="registerForm" hidden>
+      <label>Name <input id="regName" autocomplete="username" required minlength="3" /></label>
+      <label>Passwort <input id="regPass" type="password" autocomplete="new-password" required minlength="4" /></label>
+      <button type="submit">Account erstellen</button>
+    </form>
+
+    <p id="msg" class="msg"></p>
+
+    <div class="actions">
+      <a id="playBtn" class="btn" href="play.html">Spielen</a>
+      <button type="button" id="logoutBtn" hidden>Logout</button>
+    </div>
+    <p class="hint">Accounts liegen vorerst in diesem Browser (localStorage). Kein Server.</p>
+  </main>
+  <script src="js/auth.js"></script>
+  <script src="js/home.js"></script>
 </body>
 </html>
