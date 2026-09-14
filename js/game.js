@@ -18,7 +18,7 @@
     new EVEnemy({ id: "ironbell", name: "Ironbell", x: 1280, y: 420, hp: 220, atk: 22, range: 88, scale: 1.3 }),
     new EVEnemy({ id: "silkfang", name: "Silkfang", x: 1680, y: 420, hp: 70, atk: 16, range: 70, scale: 1.1 })
   ];
-
+  function weaponId() { return (window.EVLoadout && EVLoadout.get().weapon) || "blade"; }
   function resize() {
     W = Math.max(960, window.innerWidth); H = Math.max(540, window.innerHeight);
     canvas.width = W; canvas.height = H;
@@ -28,15 +28,12 @@
     foes.forEach((f) => { f.y = floor; });
   }
   window.addEventListener("resize", resize); resize();
-
   function load() { try { const d = JSON.parse(localStorage.getItem(SAVE) || "{}"); if (typeof d.gold === "number") gold = d.gold; } catch (e) {} }
   function save() { localStorage.setItem(SAVE, JSON.stringify({ gold: gold, x: ninja.x })); }
-
   window.EVGame = {
     start: function () { resize(); hp = 100; playing = true; last = performance.now(); EV.audio.start(); },
     stop: function () { save(); playing = false; playEl.classList.remove("on"); lobbyEl.classList.remove("off"); }
   };
-
   window.addEventListener("keydown", function (e) {
     if (!playing) return;
     keys[e.code] = true;
@@ -51,17 +48,12 @@
   window.addEventListener("keyup", function (e) { keys[e.code] = false; });
   document.getElementById("toMenu").onclick = function () { EVGame.stop(); };
   document.getElementById("logoutPlay").onclick = function () { save(); EVAuth.logout(); location.href = "index.html"; };
-
-  function world() {
-    EVMap.draw(ctx, { W: W, H: H, floor: floor, cam: cam, t: tWorld });
-  }
-
+  function world() { EVMap.draw(ctx, { W: W, H: H, floor: floor, cam: cam, t: tWorld }); }
   function hurtPlayer(dmg, x, y) {
     if (invuln > 0) return;
     if (ninja.state === "parry") { EVCombat.burst(x, y, "#c9b6ff", 18); if (EV.audio) EV.audio.parry(); return; }
     hp = Math.max(0, hp - dmg); invuln = 0.55; EVCombat.burst(ninja.x, ninja.y - 90, "#ff6b4a", 16);
   }
-
   let last = performance.now();
   function tick(now) {
     const dt = Math.min(0.033, (now - last) / 1000); last = now;
@@ -99,10 +91,10 @@
         ctx.fillStyle = "#f4f0ea"; ctx.fillRect(0, -2, 18, 3); ctx.fillStyle = "#c9a24a"; ctx.fillRect(0, -3, 4, 5);
         ctx.restore();
       });
-      ninja.draw(ctx); EVCombat.draw(ctx); ctx.restore();
-      lootHud.textContent = "GOLD " + gold + " · Messer " + ninja.knives;
+      ninja.draw(ctx, weaponId()); EVCombat.draw(ctx); ctx.restore();
+      lootHud.textContent = "GOLD " + gold + " \u00b7 Messer " + ninja.knives;
       stamHud.style.width = ninja.stamina + "%"; if (hpHud) hpHud.style.width = hp + "%";
-      verseLabel.textContent = ninja.state === "parry" ? "PARRY" : "TEMPEL · SHADOW HALL";
+      verseLabel.textContent = ninja.state === "parry" ? "PARRY" : "TEMPEL \u00b7 SHADOW HALL";
     }
     requestAnimationFrame(tick);
   }
