@@ -6,37 +6,92 @@
   <title>Endless Verses</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="home">
-  <main class="panel">
-    <p class="kicker">2.5D Multi-Verse</p>
-    <h1>ENDLESS VERSES</h1>
-    <p id="session" class="session">Nicht eingeloggt</p>
-
-    <div class="tabs">
-      <button type="button" id="tabLogin" class="active">Login</button>
-      <button type="button" id="tabRegister">Registrieren</button>
-    </div>
-
-    <form id="loginForm">
-      <label>Name <input id="loginName" autocomplete="username" required /></label>
-      <label>Passwort <input id="loginPass" type="password" autocomplete="current-password" required /></label>
-      <button type="submit">Einloggen</button>
-    </form>
-
-    <form id="registerForm" hidden>
-      <label>Name <input id="regName" autocomplete="username" required minlength="3" /></label>
-      <label>Passwort <input id="regPass" type="password" autocomplete="new-password" required minlength="4" /></label>
-      <button type="submit">Account erstellen</button>
-    </form>
-
-    <p id="msg" class="msg"></p>
-
-    <div class="actions">
-      <a id="playBtn" class="btn" href="play.html">Spielen</a>
+<body class="site">
+  <header class="nav">
+    <a class="logo" href="index.html">ENDLESS VERSES</a>
+    <nav>
+      <a href="#welt">Welt</a>
+      <a href="#verse">Verse</a>
+      <a href="#konto">Konto</a>
+    </nav>
+    <div class="nav-right">
+      <span id="session" class="session">Gast</span>
       <button type="button" id="logoutBtn" hidden>Logout</button>
     </div>
-    <p class="hint">Accounts liegen vorerst in diesem Browser (localStorage). Kein Server.</p>
-  </main>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">2.5D Browser-Game</p>
+    <h1>Mehrere Welten.<br />Ein Weg dazwischen.</h1>
+    <p class="lead">Tritt in den Hub. Wähle einen Vers. Kämpfe mit dem Kraftsystem dieser Welt.</p>
+    <div class="hero-actions">
+      <a id="playBtn" class="btn primary locked" href="play.html">Ins Spiel</a>
+      <a class="btn ghost" href="#konto">Account</a>
+    </div>
+    <p id="gateHint" class="hint">Zuerst registrieren oder einloggen, dann geht's in den Hub.</p>
+  </section>
+
+  <section id="welt" class="block">
+    <h2>Die Website ist der Eingang</h2>
+    <div class="grid3">
+      <article>
+        <h3>1. Konto</h3>
+        <p>Name + Passwort. Stand bleibt in diesem Browser.</p>
+      </article>
+      <article>
+        <h3>2. Hub</h3>
+        <p>Von hier aus wechselst du die Verse.</p>
+      </article>
+      <article>
+        <h3>3. Kraft</h3>
+        <p>Jedes Vers hat eigene Regeln. Nur lizenzierte Welten.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="verse" class="block">
+    <h2>Verse</h2>
+    <div class="cards">
+      <article class="card">
+        <p class="tag">offen</p>
+        <h3>Hub</h3>
+        <p>Neutraler Zwischenraum. Bewegung, Sprung, Save.</p>
+      </article>
+      <article class="card">
+        <p class="tag">platzhalter</p>
+        <h3>Soul</h3>
+        <p>Test-Vers für Look und Wechsel. Keine fremden Assets.</p>
+      </article>
+      <article class="card dim">
+        <p class="tag">später</p>
+        <h3>Weitere Welten</h3>
+        <p>Nur wenn eine Lizenz vorliegt.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="konto" class="block account">
+    <h2>Konto</h2>
+    <div class="auth-box">
+      <div class="tabs">
+        <button type="button" id="tabLogin" class="active">Login</button>
+        <button type="button" id="tabRegister">Registrieren</button>
+      </div>
+      <form id="loginForm">
+        <label>Name <input id="loginName" autocomplete="username" required /></label>
+        <label>Passwort <input id="loginPass" type="password" autocomplete="current-password" required /></label>
+        <button type="submit" class="btn primary">Einloggen</button>
+      </form>
+      <form id="registerForm" hidden>
+        <label>Name <input id="regName" autocomplete="username" required minlength="3" /></label>
+        <label>Passwort <input id="regPass" type="password" autocomplete="new-password" required minlength="4" /></label>
+        <button type="submit" class="btn primary">Account erstellen</button>
+      </form>
+      <p id="msg" class="msg"></p>
+    </div>
+  </section>
+
+  <footer class="foot">Endless Verses · v0.2 Website</footer>
   <script src="js/auth.js"></script>
   <script src="js/home.js"></script>
 </body>

@@ -1,61 +1,117 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  height: 100%;
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100%;
   background: #07070c;
-  color: #f2efe6;
-  font-family: Georgia, serif;
+  color: #efece4;
+  font-family: Georgia, "Times New Roman", serif;
 }
-body.home {
+a { color: inherit; }
+.site { max-width: 1100px; margin: 0 auto; padding: 0 20px 48px; }
+.nav {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 24px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  border-bottom: 1px solid #23263a;
+  flex-wrap: wrap;
 }
-.panel {
-  width: min(420px, 100%);
+.logo { letter-spacing: 0.28em; font-size: 13px; text-decoration: none; }
+.nav nav { display: flex; gap: 18px; font-size: 14px; opacity: 0.75; }
+.nav nav a { text-decoration: none; }
+.nav-right { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.session { opacity: 0.7; }
+.hero { padding: 72px 0 48px; }
+.kicker {
+  letter-spacing: 0.22em;
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.hero h1 {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  margin: 14px 0 16px;
+}
+.lead { max-width: 520px; opacity: 0.72; font-size: 18px; }
+.hero-actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border: 1px solid #3a4060;
+  background: #15182 6;
+  color: #efece4;
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+}
+.btn.primary { background: #c8b060; color: #16140d; border-color: #c8b060; }
+.btn.ghost { background: transparent; }
+.btn.locked { opacity: 0.55; }
+button { font: inherit; }
+#logoutBtn {
+  background: transparent;
+  color: #efece4;
+  border: 1px solid #3a4060;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.hint { margin-top: 14px; font-size: 13px; opacity: 0.5; }
+.block { padding: 36px 0; border-top: 1px solid #23263a; }
+.block h2 { font-weight: 400; letter-spacing: 0.08em; margin-bottom: 20px; }
+.grid3, .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+article h3 { font-weight: 400; margin-bottom: 8px; }
+article p, .card p { opacity: 0.7; line-height: 1.45; }
+.card {
+  border: 1px solid #2a2e48;
+  padding: 18px;
+  background: #10121c;
+}
+.card.dim { opacity: 0.55; }
+.tag {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c8b060;
+  margin-bottom: 8px;
+  opacity: 1;
+}
+.auth-box {
+  max-width: 380px;
   border: 1px solid #2a2e48;
   background: #10121c;
-  padding: 28px 24px;
+  padding: 20px;
 }
-.kicker {
-  letter-spacing: 0.2em;
-  font-size: 11px;
-  opacity: 0.55;
-  text-transform: uppercase;
-}
-h1 {
-  letter-spacing: 0.22em;
-  font-size: 22px;
-  font-weight: 400;
-  margin: 8px 0 12px;
-}
-.session { opacity: 0.75; margin-bottom: 16px; }
 .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-.tabs button, form button, .btn, #logoutBtn {
+.tabs button {
   background: #1a1e30;
-  color: #f2efe6;
+  color: #efece4;
   border: 1px solid #3a4060;
   padding: 8px 12px;
   cursor: pointer;
-  font: inherit;
-  text-decoration: none;
-  display: inline-block;
 }
 .tabs button.active { border-color: #c8b060; }
 form { display: flex; flex-direction: column; gap: 10px; }
 label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 input {
   background: #0b0d16;
-  color: #f2efe6;
+  color: #efece4;
   border: 1px solid #3a4060;
   padding: 8px;
   font: inherit;
 }
-.msg { min-height: 1.2em; color: #e08080; margin-top: 10px; }
-.actions { display: flex; gap: 8px; margin-top: 16px; }
-.hint { margin-top: 16px; font-size: 12px; opacity: 0.45; }
+.msg { min-height: 1.2em; color: #e08080; margin-top: 8px; }
+.foot { padding: 28px 0 8px; font-size: 12px; opacity: 0.4; }
+
 #wrap {
-  min-height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,9 +119,14 @@ input {
   gap: 12px;
   padding: 16px;
 }
-header h1 { font-size: 20px; }
-#verseName, header p { text-align: center; opacity: 0.75; font-size: 14px; }
-header a { color: #c8b060; }
+#wrap header h1 {
+  letter-spacing: 0.28em;
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
+}
+#verseName, #wrap header p { text-align: center; opacity: 0.75; font-size: 14px; }
+#wrap header a { color: #c8b060; }
 canvas {
   width: min(960px, 100%);
   height: auto;
@@ -73,4 +134,4 @@ canvas {
   border: 1px solid #2a2e48;
   image-rendering: pixelated;
 }
-footer { font-size: 13px; opacity: 0.55; }
+#wrap footer { font-size: 13px; opacity: 0.55; }

@@ -7,17 +7,22 @@
   const sessionEl = document.getElementById("session");
   const playBtn = document.getElementById("playBtn");
   const logoutBtn = document.getElementById("logoutBtn");
+  const gateHint = document.getElementById("gateHint");
 
   function show() {
     const user = EVAuth.current();
     if (user) {
-      sessionEl.textContent = "Eingeloggt als " + user.name;
+      sessionEl.textContent = user.name;
       logoutBtn.hidden = false;
-      playBtn.style.pointerEvents = "auto";
-      playBtn.style.opacity = "1";
+      playBtn.classList.remove("locked");
+      playBtn.setAttribute("href", "play.html");
+      gateHint.textContent = "Eingeloggt. Ins Spiel öffnet den Hub.";
     } else {
-      sessionEl.textContent = "Nicht eingeloggt";
+      sessionEl.textContent = "Gast";
       logoutBtn.hidden = true;
+      playBtn.classList.add("locked");
+      playBtn.setAttribute("href", "#konto");
+      gateHint.textContent = "Zuerst registrieren oder einloggen, dann geht's in den Hub.";
     }
   }
 
@@ -43,6 +48,7 @@
         document.getElementById("loginName").value,
         document.getElementById("loginPass").value
       );
+      show();
       location.href = "play.html";
     } catch (err) {
       msg.textContent = err.message;
@@ -56,6 +62,7 @@
         document.getElementById("regName").value,
         document.getElementById("regPass").value
       );
+      show();
       location.href = "play.html";
     } catch (err) {
       msg.textContent = err.message;
