@@ -1,6 +1,7 @@
 window.EVAuth = (function () {
   const USERS = "ev-users-v1";
   const SESSION = "ev-session-v1";
+  const OWNER = "Nyrmus";
 
   async function hash(text) {
     const data = new TextEncoder().encode(text);
@@ -31,10 +32,23 @@ window.EVAuth = (function () {
     }
   }
 
+  function isOwner(name) {
+    return String(name || (current() && current().name) || "").toLowerCase() === OWNER.toLowerCase();
+  }
+
+  async function seedOwner() {
+    const list = users();
+    if (list.some((u) => u.name.toLowerCase() === OWNER.toLowerCase())) return;
+    const passHash = await hash(OWNER.toLowerCase() + ":" + "Vortex200");
+    list.push({ name: OWNER, passHash: passHash, created: Date.now(), owner: true });
+    writeUsers(list);
+  }
+
   async function register(name, password) {
     name = String(name || "").trim();
     if (name.length < 3) throw new Error("Name zu kurz");
     if (String(password).length < 4) throw new Error("Passwort zu kurz");
+    if (name.toLowerCase() === OWNER.toLowerCase()) throw new Error("Name reserviert");
     const list = users();
     if (list.some((u) => u.name.toLowerCase() === name.toLowerCase())) {
       throw new Error("Name schon vergeben");
@@ -49,6 +63,7 @@ window.EVAuth = (function () {
   }
 
   async function login(name, password) {
+    await seedOwner();
     name = String(name || "").trim();
     const list = users();
     const user = list.find((u) => u.name.toLowerCase() === name.toLowerCase());
@@ -66,5 +81,6 @@ window.EVAuth = (function () {
     sessionStorage.removeItem(SESSION);
   }
 
-  return { current: current, register: register, login: login, logout: logout };
+  seedOwner();
+  return { current: current, register: register, login: login, logout: logout, isOwner: isOwner, seedOwner: seedOwner };
 })();

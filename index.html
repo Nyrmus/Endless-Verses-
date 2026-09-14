@@ -14,142 +14,95 @@
       background:
         radial-gradient(900px 500px at 15% -10%, rgba(168, 90, 255, .28), transparent 55%),
         radial-gradient(700px 420px at 90% 10%, rgba(90, 40, 160, .35), transparent 50%),
-        linear-gradient(180deg, #07060c 0%, #0b0714 45%, #05040a 100%);
+        #05040a;
     }
     body:before {
       content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
+      position: fixed; inset: 0; pointer-events: none;
       background-image:
         linear-gradient(115deg, transparent 48%, rgba(220,190,255,.08) 50%, transparent 52%),
         linear-gradient(65deg, transparent 48%, rgba(160,110,255,.06) 50%, transparent 52%);
-      background-size: 90px 90px, 70px 70px;
-      opacity: .35;
+      background-size: 90px 90px, 70px 70px; opacity: .35;
     }
     a { color: #e3c9ff; text-decoration: none; }
-    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 28px 22px 72px; }
+    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 28px 22px 80px; }
     .glass {
       background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      border: 1px solid rgba(214, 186, 255, .28);
+      border: 1px solid rgba(214,186,255,.28);
       box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
     }
-    .nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 14px 18px;
-      border-radius: 18px;
-      flex-wrap: wrap;
-    }
+    .nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 18px; border-radius: 18px; flex-wrap: wrap; }
     .logo { letter-spacing: .34em; font-size: 12px; color: #f7f1ff; }
-    .nav nav { display: flex; gap: 16px; color: #d9c6f5; }
-    .hero { padding: 74px 8px 50px; }
-    .kicker {
-      letter-spacing: .26em;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: #c9a6ff;
-    }
+    .nav nav { display: flex; gap: 16px; }
+    .hero { padding: 56px 0 28px; text-align: center; }
     h1 {
-      font-weight: 400;
-      font-size: clamp(36px, 7vw, 64px);
-      line-height: 1.06;
-      margin: 14px 0 16px;
-      text-shadow: 0 0 28px rgba(160, 90, 255, .35);
+      font-weight: 400; letter-spacing: .12em;
+      font-size: clamp(34px, 7vw, 58px);
+      text-shadow: 0 0 28px rgba(160,90,255,.4);
+      margin-bottom: 22px;
     }
-    .lead { max-width: 540px; font-size: 18px; line-height: 1.55; color: #d7cbe8; }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+    .shot {
+      width: min(720px, 100%);
+      margin: 0 auto 22px;
+      border-radius: 18px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      position: relative;
+      background: #0b0a14;
+    }
+    .shot svg { width: 100%; height: 100%; display: block; }
+    .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 18px;
-      border-radius: 999px;
-      border: 1px solid rgba(214,186,255,.5);
-      background: linear-gradient(180deg, #c9a6ff, #8a4dff);
-      color: #14081f;
-      cursor: pointer;
-      font: inherit;
-      box-shadow: 0 0 24px rgba(150, 80, 255, .35);
+      display: inline-flex; align-items: center; padding: 12px 18px; border-radius: 999px;
+      border: 1px solid rgba(214,186,255,.5); background: linear-gradient(180deg,#c9a6ff,#8a4dff);
+      color: #14081f; cursor: pointer; font: inherit; box-shadow: 0 0 24px rgba(150,80,255,.35);
     }
     .btn.ghost { background: rgba(255,255,255,.04); color: #ead9ff; box-shadow: none; }
     .btn.locked { opacity: .5; }
-    .hint { margin-top: 14px; color: #9b8fb0; font-size: 14px; }
-    section { padding: 42px 0; }
-    h2 { font-weight: 400; letter-spacing: .08em; margin-bottom: 22px; }
-    .socials {
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      flex-wrap: wrap;
-      padding: 10px 0 20px;
+    .stars { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
+    .stars button {
+      width: 36px; height: 36px; border-radius: 8px; transform: rotate(45deg);
+      border: 1px solid rgba(214,186,255,.4); background: rgba(255,255,255,.05);
+      color: #e3c9ff; cursor: pointer;
     }
-    .diamond {
-      width: 168px;
-      height: 168px;
-      transform: rotate(45deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .diamond:hover {
-      transform: rotate(45deg) scale(1.06);
-      box-shadow: 0 0 34px rgba(160,90,255,.45), inset 0 1px 0 rgba(255,255,255,.22);
-    }
-    .diamond-inner {
-      transform: rotate(-45deg);
-      text-align: center;
-      width: 120px;
-    }
-    .diamond .tag {
-      display: block;
-      color: #d7b8ff;
-      font-size: 10px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .diamond strong {
-      display: block;
-      font-weight: 400;
-      font-size: 18px;
-      color: #fff;
-    }
-    .auth {
-      max-width: 380px;
-      padding: 22px;
-      border-radius: 22px;
-    }
+    .stars button span { display: block; transform: rotate(-45deg); }
+    #rateAvg { margin-top: 10px; color: #9b8fb0; font-size: 14px; }
+    section { padding: 36px 0; }
+    h2 { font-weight: 400; letter-spacing: .08em; margin-bottom: 16px; }
+    .socials { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+    .diamond { width: 150px; height: 150px; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; }
+    .diamond-inner { transform: rotate(-45deg); text-align: center; }
+    .diamond .tag { display: block; color: #d7b8ff; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; }
+    .auth, .box { max-width: 520px; padding: 20px; border-radius: 22px; }
     .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-    .tabs button, #logoutBtn {
-      background: rgba(255,255,255,.05);
-      color: #f4edff;
-      border: 1px solid rgba(214,186,255,.28);
-      padding: 8px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      font: inherit;
+    .tabs button, #logoutBtn, .cmt-actions button {
+      background: rgba(255,255,255,.05); color: #f4edff; border: 1px solid rgba(214,186,255,.28);
+      padding: 7px 11px; border-radius: 999px; cursor: pointer; font: inherit;
     }
-    .tabs button.active {
-      border-color: #c9a6ff;
-      box-shadow: 0 0 16px rgba(150,80,255,.25);
-    }
+    .tabs button.active { border-color: #c9a6ff; }
     form { display: flex; flex-direction: column; gap: 10px; }
     label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
-    input {
-      background: rgba(8,6,16,.7);
-      color: #f4edff;
-      border: 1px solid rgba(214,186,255,.28);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font: inherit;
+    input, textarea {
+      background: rgba(8,6,16,.7); color: #f4edff; border: 1px solid rgba(214,186,255,.28);
+      padding: 10px 12px; border-radius: 12px; font: inherit;
     }
-    .msg { color: #ff9ad8; min-height: 1.2em; }
+    textarea { min-height: 80px; resize: vertical; }
+    .msg, #commentErr { color: #ff9ad8; min-height: 1.2em; }
+    .muted { color: #9b8fb0; }
+    .cmt { margin: 12px 0; padding: 14px; border-radius: 16px; }
+    .cmt.pinned { box-shadow: 0 0 0 1px #c9a6ff; }
+    .cmt header { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+    .owner-badge {
+      font-size: 10px; letter-spacing: .18em; padding: 3px 8px; border-radius: 999px;
+      color: #f4edff; background: #7b3dff; box-shadow: 0 0 16px rgba(150,80,255,.8);
+    }
+    .pin { font-size: 11px; color: #c9a6ff; }
+    .cmt-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .thread { margin: 10px 0 0 16px; }
+    .thread summary { cursor: pointer; color: #c9a6ff; margin-bottom: 8px; }
+    .note { padding: 8px 12px; margin-bottom: 8px; border-radius: 12px; background: rgba(123,61,255,.2); }
+    .idea { margin-bottom: 10px; }
     footer { padding-top: 20px; color: #7d738c; font-size: 12px; }
   </style>
 </head>
@@ -159,6 +112,7 @@
       <a class="logo" href="index.html">ENDLESS VERSES</a>
       <nav>
         <a href="#socials">Socials</a>
+        <a href="#comments-sec">Kommentare</a>
         <a href="#konto">Konto</a>
       </nav>
       <div>
@@ -168,38 +122,62 @@
     </header>
 
     <div class="hero">
-      <p class="kicker">Glas · Diamant · Violett</p>
-      <h1>Mehrere Welten.<br>Ein Weg dazwischen.</h1>
-      <p class="lead">Schwarzer Grund, violettes Licht, Glas davor. Die Website ist die Tür — danach der Hub.</p>
+      <h1>ENDLESS VERSES</h1>
+      <div class="shot glass">
+        <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" aria-label="Endless Verses">
+          <rect width="960" height="540" fill="#0b1020"/>
+          <rect y="430" width="960" height="110" fill="#2a2740"/>
+          <rect y="430" width="960" height="3" fill="#c8b060"/>
+          <rect x="120" y="300" width="28" height="28" fill="#1a1d2e"/>
+          <rect x="260" y="270" width="36" height="36" fill="#1a1d2e"/>
+          <rect x="420" y="250" width="48" height="48" fill="#1a1d2e"/>
+          <rect x="600" y="230" width="58" height="58" fill="#1a1d2e"/>
+          <rect x="760" y="210" width="68" height="68" fill="#1a1d2e"/>
+          <ellipse cx="734" cy="436" rx="18" ry="6" fill="#000" opacity=".35"/>
+          <rect x="720" y="382" width="28" height="48" fill="#e8e4d8"/>
+          <rect x="726" y="392" width="16" height="8" fill="#c8b060"/>
+        </svg>
+      </div>
       <div class="row">
         <a id="playBtn" class="btn locked" href="#konto">Ins Spiel</a>
-        <a class="btn ghost glass" href="#konto">Account anlegen</a>
       </div>
-      <p id="gateHint" class="hint">Zuerst Konto, dann öffnet sich der Hub.</p>
+      <div class="stars" aria-label="Bewerten">
+        <button type="button" data-star="1"><span>1</span></button>
+        <button type="button" data-star="2"><span>2</span></button>
+        <button type="button" data-star="3"><span>3</span></button>
+        <button type="button" data-star="4"><span>4</span></button>
+        <button type="button" data-star="5"><span>5</span></button>
+      </div>
+      <p id="rateAvg">Noch keine Bewertung</p>
     </div>
 
     <section id="socials">
       <h2>Socials</h2>
       <div class="socials">
-        <a class="diamond glass" href="https://x.com/Nyrmus8" target="_blank" rel="noopener">
-          <span class="diamond-inner">
-            <span class="tag">X</span>
-            <strong>Nyrmus8</strong>
-          </span>
-        </a>
-        <a class="diamond glass" href="https://www.tiktok.com/@nyrmus" target="_blank" rel="noopener">
-          <span class="diamond-inner">
-            <span class="tag">TikTok</span>
-            <strong>nyrmus</strong>
-          </span>
-        </a>
-        <a class="diamond glass" href="https://www.reddit.com/user/Jolly_Dot_2995/" target="_blank" rel="noopener">
-          <span class="diamond-inner">
-            <span class="tag">Reddit</span>
-            <strong>Nyrmus</strong>
-          </span>
-        </a>
+        <a class="diamond glass" href="https://x.com/Nyrmus8" target="_blank" rel="noopener"><span class="diamond-inner"><span class="tag">X</span>Nyrmus8</span></a>
+        <a class="diamond glass" href="https://www.tiktok.com/@nyrmus" target="_blank" rel="noopener"><span class="diamond-inner"><span class="tag">TikTok</span>nyrmus</span></a>
+        <a class="diamond glass" href="https://www.reddit.com/user/Jolly_Dot_2995/" target="_blank" rel="noopener"><span class="diamond-inner"><span class="tag">Reddit</span>Nyrmus</span></a>
       </div>
+    </section>
+
+    <section id="inbox-sec">
+      <h2>Ideen-Inbox · <span id="inboxCount">0</span></h2>
+      <form id="ideaForm" class="box glass">
+        <label>Idee <textarea id="ideaText" required></textarea></label>
+        <button class="btn" type="submit">Senden</button>
+      </form>
+      <div id="inbox" class="box glass" style="margin-top:12px"></div>
+    </section>
+
+    <section id="comments-sec">
+      <h2>Kommentare</h2>
+      <div id="notifs"></div>
+      <form id="commentForm" class="box glass">
+        <label>Kommentar <textarea id="commentText" required></textarea></label>
+        <button class="btn" type="submit">Posten</button>
+        <p id="commentErr"></p>
+      </form>
+      <div id="comments"></div>
     </section>
 
     <section id="konto">
@@ -226,5 +204,6 @@
   </div>
   <script src="js/auth.js"></script>
   <script src="js/home.js"></script>
+  <script src="js/community.js"></script>
 </body>
 </html>
