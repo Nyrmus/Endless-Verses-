@@ -28,11 +28,6 @@
         radial-gradient(32% 28% at 88% 0%, rgba(80,220,255,.16), transparent 55%),
         radial-gradient(28% 30% at 70% 80%, rgba(255,70,180,.12), transparent 60%);
       filter: blur(8px) saturate(1.4);
-      animation: drift 18s ease-in-out infinite alternate;
-    }
-    @keyframes drift {
-      from { transform: translate3d(-2%, -1%, 0) scale(1); }
-      to { transform: translate3d(2%, 2%, 0) scale(1.06); }
     }
     .mesh {
       position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .22;
@@ -52,56 +47,61 @@
     }
     .nav {
       display: flex; justify-content: space-between; align-items: center;
-      gap: 16px; padding: 12px 16px 12px 22px; border-radius: 999px; position: relative;
+      gap: 16px; padding: 12px 16px 12px 22px; border-radius: 999px;
     }
     .logo { font-weight: 700; letter-spacing: .28em; font-size: 11px; }
     .nav nav { display: flex; gap: 22px; color: var(--mute); font-size: 14px; }
-    .account-wrap { position: static; z-index: 30; }
-    #accountToggle {
+    #accountOpen {
       background: rgba(181,107,255,.12); color: #fff; border: 1px solid var(--line);
-      padding: 9px 14px; border-radius: 999px; cursor: pointer; font: inherit;
+      padding: 9px 16px; border-radius: 999px; cursor: pointer; font: inherit;
     }
-    #accountToggle:hover { box-shadow: 0 0 22px rgba(181,107,255,.55); }
-    #accountPanel {
-      position: fixed; right: 20px; top: 78px;
-      width: 320px; padding: 18px; border-radius: 22px; z-index: 80;
-      pointer-events: auto;
+    #accountOpen:hover { box-shadow: 0 0 22px rgba(181,107,255,.55); }
+    #accountOverlay {
+      position: fixed; inset: 0; z-index: 200;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(4,3,10,.72);
+      padding: 20px;
     }
-    #accountPanel .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-    #accountPanel .tabs button {
-      flex: 1; background: rgba(255,255,255,.04); color: #f4edff;
-      border: 1px solid var(--line); padding: 9px 0; border-radius: 999px;
+    #accountOverlay.on { display: flex; }
+    #accountCard {
+      width: min(380px, 100%);
+      padding: 22px;
+      border-radius: 24px;
+      position: relative;
+    }
+    #accountClose {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid var(--line); background: transparent; color: #fff;
       cursor: pointer; font: inherit;
     }
-    #accountPanel .tabs button.active {
-      background: rgba(181,107,255,.25); box-shadow: 0 0 16px rgba(181,107,255,.25);
+    #accountCard .tabs { display: flex; gap: 8px; margin: 8px 0 18px; }
+    #accountCard .tabs button {
+      flex: 1; background: rgba(255,255,255,.04); color: #f4edff;
+      border: 1px solid var(--line); padding: 10px 0; border-radius: 999px;
+      cursor: pointer; font: inherit;
     }
-    #accountPanel form { display: flex; flex-direction: column; gap: 14px; }
-    #accountPanel label {
+    #accountCard .tabs button.active { background: rgba(181,107,255,.25); }
+    #accountCard form { display: flex; flex-direction: column; gap: 14px; }
+    #accountCard label {
       display: flex; flex-direction: column; gap: 8px;
       font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute);
     }
-    #accountPanel input {
-      height: 46px; width: 100%;
-      background: #0b0914; color: #fff;
-      border: 1px solid rgba(214,186,255,.32);
-      border-radius: 12px; padding: 0 14px;
-      font: 16px/1 Syne, sans-serif;
-      outline: none; appearance: none; -webkit-appearance: none;
+    #accountCard input {
+      height: 48px; width: 100%; background: #0b0914; color: #fff;
+      border: 1px solid rgba(214,186,255,.32); border-radius: 12px;
+      padding: 0 14px; font: 16px/1 Syne, sans-serif; outline: none;
     }
-    #accountPanel input:hover { border-color: rgba(214,186,255,.55); }
-    #accountPanel input:focus {
-      border-color: #c9a6ff;
-      box-shadow: 0 0 0 3px rgba(181,107,255,.28);
+    #accountCard input:focus {
+      border-color: #c9a6ff; box-shadow: 0 0 0 3px rgba(181,107,255,.28);
     }
-    #accountPanel .btn { width: 100%; margin-top: 2px; }
+    #accountCard .btn { width: 100%; }
     .hero { padding: 90px 0 28px; text-align: center; }
     .hero h1 {
       font-family: "Instrument Serif", serif; font-weight: 400;
       font-size: clamp(52px, 11vw, 104px); letter-spacing: -.03em; line-height: .88;
       background: linear-gradient(180deg, #fff 20%, #c9a6ff 100%);
       -webkit-background-clip: text; background-clip: text; color: transparent;
-      filter: drop-shadow(0 0 40px rgba(181,107,255,.35));
     }
     .row { display: flex; gap: 10px; justify-content: center; margin-top: 34px; }
     .btn {
@@ -109,42 +109,27 @@
       padding: 13px 22px; border-radius: 999px; border: 0;
       background: linear-gradient(180deg, #e0c2ff, var(--violet) 40%, var(--deep));
       color: #14081f; cursor: pointer; font: inherit; font-weight: 700;
-      box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 12px 40px rgba(109,43,255,.45);
-      transition: box-shadow .2s ease, filter .2s ease;
     }
-    .btn:hover { box-shadow: 0 0 28px rgba(181,107,255,.7); filter: brightness(1.08); }
-    .btn.locked { filter: grayscale(.15); opacity: .7; }
+    .btn:hover { box-shadow: 0 0 28px rgba(181,107,255,.7); }
+    .btn.locked { opacity: .7; }
     .stars { display: flex; gap: 10px; justify-content: center; margin-top: 28px; }
     .stars button {
       width: 38px; height: 38px; border: 1px solid var(--line);
       background: rgba(255,255,255,.04); color: #e3c9ff; cursor: pointer;
       clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     }
-    .stars button:hover { box-shadow: 0 0 18px rgba(181,107,255,.6); }
     #rateAvg { margin-top: 12px; color: var(--mute); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
     section { padding: 56px 0 10px; }
     h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; margin-bottom: 22px; }
     .socials { display: flex; justify-content: center; gap: 42px; flex-wrap: wrap; padding: 20px 0; }
-    .spin-wrap { width: 170px; height: 170px; animation: spinY 7s linear infinite; transform-style: preserve-3d; }
+    .spin-wrap { width: 170px; height: 170px; animation: spinY 7s linear infinite; }
     .spin-wrap:nth-child(2) { animation-duration: 8.2s; animation-direction: reverse; }
-    .spin-wrap:nth-child(3) { animation-duration: 6.4s; }
-    @keyframes spinY {
-      from { transform: rotateZ(-2deg) rotateY(0); }
-      to { transform: rotateZ(-2deg) rotateY(360deg); }
-    }
+    @keyframes spinY { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
     .diamond {
-      width: 170px; height: 170px;
-      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+      width: 170px; height: 170px; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
       display: flex; align-items: center; justify-content: center;
     }
-    .diamond:hover { box-shadow: 0 0 40px rgba(181,107,255,.75); }
-    .diamond-inner { text-align: center; animation: counter 7s linear infinite; }
-    .spin-wrap:nth-child(2) .diamond-inner { animation-duration: 8.2s; animation-direction: reverse; }
-    .spin-wrap:nth-child(3) .diamond-inner { animation-duration: 6.4s; }
-    @keyframes counter {
-      from { transform: rotateY(0); }
-      to { transform: rotateY(-360deg); }
-    }
+    .diamond-inner { text-align: center; }
     .diamond .tag { display: block; color: #d7b8ff; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
     .slot-wrap { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
     #slot { display: flex; gap: 10px; padding: 18px; border-radius: 24px; }
@@ -153,12 +138,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 36px; background: rgba(0,0,0,.35); border: 1px solid var(--line);
     }
-    #slot.jackpot { animation: boom .6s ease 3; box-shadow: 0 0 50px #ff4fd8, 0 0 90px #7b3dff; }
-    @keyframes boom {
-      0%,100% { transform: scale(1) rotate(0); }
-      30% { transform: scale(1.06) rotate(-2deg); }
-      60% { transform: scale(1.08) rotate(2deg); }
-    }
+    #slot.jackpot { box-shadow: 0 0 50px #ff4fd8; }
     .slot-side { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
     .tokens { letter-spacing: .12em; text-transform: uppercase; color: #d7b8ff; }
     .box { max-width: 560px; padding: 20px; border-radius: 26px; }
@@ -170,28 +150,18 @@
     label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--mute); }
     input, textarea {
       background: #0b0914; color: #fff; border: 1px solid var(--line);
-      padding: 11px 12px; border-radius: 14px; font: inherit; width: 100%;
-      outline: none;
+      padding: 11px 12px; border-radius: 14px; font: inherit; width: 100%; outline: none;
     }
-    input:focus, textarea:focus {
-      border-color: #c9a6ff;
-      box-shadow: 0 0 0 3px rgba(181,107,255,.25);
-    }
-    textarea { min-height: 88px; resize: vertical; }
-    .msg, #commentErr { color: #ff9ad8; min-height: 1.2em; }
+    textarea { min-height: 88px; }
+    .msg { color: #ff9ad8; min-height: 1.2em; }
     .muted { color: var(--mute); }
     .cmt { margin: 12px 0; padding: 16px; border-radius: 20px; }
-    .cmt.pinned { box-shadow: 0 0 0 1px #c9a6ff, 0 0 28px rgba(181,107,255,.2); }
-    .cmt header { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
     .owner-badge {
       font-size: 10px; letter-spacing: .2em; padding: 4px 8px; border-radius: 999px;
       color: #fff; background: linear-gradient(90deg, #9b5cff, #6d2bff);
-      box-shadow: 0 0 18px rgba(150,80,255,.9);
     }
     .cmt-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
     .thread { margin: 10px 0 0 14px; }
-    .thread summary { cursor: pointer; color: #c9a6ff; }
-    .note { padding: 10px 12px; margin-bottom: 8px; border-radius: 14px; background: rgba(123,61,255,.22); }
     footer { padding-top: 48px; color: #7d738c; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
   </style>
 </head>
@@ -206,27 +176,7 @@
         <a href="#slot-sec">Automat</a>
         <a href="#comments-sec">Kommentare</a>
       </nav>
-      <div class="account-wrap">
-        <button type="button" id="accountToggle"><span id="session">Konto</span></button>
-        <div id="accountPanel" class="glass" hidden>
-          <div class="tabs">
-            <button type="button" id="tabLogin" class="active">Login</button>
-            <button type="button" id="tabRegister">Registrieren</button>
-          </div>
-          <form id="loginForm">
-            <label>Name <input id="loginName" autocomplete="username"></label>
-            <label>Passwort <input id="loginPass" type="password" autocomplete="current-password"></label>
-            <button class="btn" type="submit">Einloggen</button>
-          </form>
-          <form id="registerForm" class="off">
-            <label>Name <input id="regName" autocomplete="username"></label>
-            <label>Passwort <input id="regPass" type="password" autocomplete="new-password"></label>
-            <button class="btn" type="submit">Account erstellen</button>
-          </form>
-          <p id="msg" class="msg"></p>
-          <button type="button" id="logoutBtn" hidden>Logout</button>
-        </div>
-      </div>
+      <button type="button" id="accountOpen"><span id="session">Konto</span></button>
     </header>
 
     <div class="hero">
@@ -291,6 +241,29 @@
     </section>
     <footer>Endless Verses</footer>
   </div>
+
+  <div id="accountOverlay" aria-hidden="true">
+    <div id="accountCard" class="glass">
+      <button type="button" id="accountClose" aria-label="Schließen">×</button>
+      <div class="tabs">
+        <button type="button" id="tabLogin" class="active">Login</button>
+        <button type="button" id="tabRegister">Registrieren</button>
+      </div>
+      <form id="loginForm">
+        <label>Name <input id="loginName" autocomplete="username"></label>
+        <label>Passwort <input id="loginPass" type="password" autocomplete="current-password"></label>
+        <button class="btn" type="submit">Einloggen</button>
+      </form>
+      <form id="registerForm" class="off">
+        <label>Name <input id="regName" autocomplete="username"></label>
+        <label>Passwort <input id="regPass" type="password" autocomplete="new-password"></label>
+        <button class="btn" type="submit">Account erstellen</button>
+      </form>
+      <p id="msg" class="msg"></p>
+      <button type="button" id="logoutBtn" class="off">Logout</button>
+    </div>
+  </div>
+
   <script src="js/auth.js"></script>
   <script src="js/home.js"></script>
   <script src="js/community.js"></script>
