@@ -2,14 +2,15 @@
   const canvas = document.getElementById("game");
   const ctx = canvas.getContext("2d");
   const verseLabel = document.getElementById("verseName");
-  const menu = document.getElementById("menu");
+  const menuEl = document.getElementById("menu");
+  const playEl = document.getElementById("play");
   const user = window.EVAuth && EVAuth.current();
   const SAVE_KEY = "endless-verses-v01-" + (user ? user.name : "guest");
 
   const keys = {};
   const player = { x: 200, y: 360, vx: 0, vy: 0, w: 28, h: 48, onGround: false };
   let verseId = "hub";
-  let paused = false;
+  let playing = false;
   const gravity = 1800;
   const speed = 240;
   const jump = 620;
@@ -28,49 +29,47 @@
       if (typeof data.y === "number") player.y = data.y;
       if (data.verse && window.VERSES[data.verse]) verseId = data.verse;
     } catch (e) {}
+    markVerse();
   }
 
   function save() {
     localStorage.setItem(SAVE_KEY, JSON.stringify({ x: player.x, y: player.y, verse: verseId }));
   }
 
-  function openMenu() {
-    paused = true;
-    menu.classList.add("on");
+  function markVerse() {
+    document.getElementById("pickHub").classList.toggle("active", verseId === "hub");
+    document.getElementById("pickSoul").classList.toggle("active", verseId === "soul");
   }
-  function closeMenu() {
-    paused = false;
-    menu.classList.remove("on");
+
+  function startGame() {
+    playing = true;
+    menuEl.classList.add("off");
+    playEl.classList.add("on");
+    Object.keys(keys).forEach((k) => { keys[k] = false; });
     last = performance.now();
   }
 
+  function toMenu() {
+    save();
+    playing = false;
+    playEl.classList.remove("on");
+    menuEl.classList.remove("off");
+    markVerse();
+  }
+
   window.addEventListener("keydown", (e) => {
-    if (e.code === "Escape") {
-      e.preventDefault();
-      if (paused) closeMenu();
-      else openMenu();
-      return;
-    }
-    if (paused) return;
+    if (!playing) return;
     keys[e.code] = true;
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code)) e.preventDefault();
-    if (e.code === "Digit1") verseId = "hub";
-    if (e.code === "Digit2") verseId = "soul";
   });
   window.addEventListener("keyup", (e) => {
     keys[e.code] = false;
   });
 
-  document.getElementById("menuBtn").onclick = openMenu;
-  document.getElementById("resumeBtn").onclick = closeMenu;
-  document.getElementById("verseHub").onclick = function () { verseId = "hub"; save(); };
-  document.getElementById("verseSoul").onclick = function () { verseId = "soul"; save(); };
-  document.getElementById("saveBtn").onclick = function () {
-    save();
-    this.textContent = "Gespeichert";
-    const btn = this;
-    setTimeout(function () { btn.textContent = "Speichern"; }, 900);
-  };
+  document.getElementById("startBtn").onclick = startGame;
+  document.getElementById("pickHub").onclick = function () { verseId = "hub"; markVerse(); save(); };
+  document.getElementById("pickSoul").onclick = function () { verseId = "soul"; markVerse(); save(); };
+  document.getElementById("toMenu").onclick = toMenu;
   document.getElementById("logoutPlay").onclick = function () {
     save();
     EVAuth.logout();
@@ -83,7 +82,7 @@
   function tick(now) {
     const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
-    if (!paused) {
+    if (playing) {
       const left = keys.ArrowLeft || keys.KeyA;
       const right = keys.ArrowRight || keys.KeyD;
       const wantJump = keys.Space || keys.KeyW || keys.ArrowUp;
@@ -106,9 +105,9 @@
       }
       saveTimer += dt;
       if (saveTimer > 1) { saveTimer = 0; save(); }
+      draw();
+      verseLabel.textContent = verse().name;
     }
-    draw();
-    verseLabel.textContent = verse().name;
     requestAnimationFrame(tick);
   }
 

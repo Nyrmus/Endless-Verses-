@@ -3,67 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Endless Verses — Play</title>
+  <title>Endless Verses</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Syne:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
   <style>
-    body { margin: 0; background: #04030a; font-family: Syne, sans-serif; color: #f4edff; }
-    #wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px; }
-    #wrap header h1 { font-family: "Instrument Serif", serif; letter-spacing: .08em; font-weight: 400; }
-    #menuBtn {
-      position: fixed; top: 18px; right: 18px; z-index: 5;
-      border: 1px solid rgba(214,186,255,.35); background: rgba(20,12,36,.7);
-      color: #fff; padding: 10px 16px; border-radius: 999px; cursor: pointer; font: inherit;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh; color: #f4edff; font-family: Syne, sans-serif;
+      background: #04030a;
     }
+    .chroma {
+      position: fixed; inset: -20%; pointer-events: none;
+      background:
+        radial-gradient(40% 35% at 18% 8%, rgba(181,107,255,.45), transparent 58%),
+        radial-gradient(32% 28% at 82% 12%, rgba(80,220,255,.14), transparent 55%);
+      filter: blur(10px);
+    }
+    #menu, #play {
+      position: relative; z-index: 1; min-height: 100vh;
+    }
+    #play { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+    #play.on { display: flex; }
+    #menu.off { display: none; }
     #menu {
-      position: fixed; inset: 0; z-index: 10;
-      display: none; align-items: center; justify-content: center;
-      background: rgba(4,3,10,.78);
+      display: flex; align-items: center; justify-content: center;
     }
-    #menu.on { display: flex; }
     #menuCard {
-      width: min(360px, 92vw); padding: 28px 24px; border-radius: 24px;
+      width: min(420px, 92vw); text-align: center; padding: 36px 28px;
+      border-radius: 28px;
       background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
       border: 1px solid rgba(214,186,255,.3);
-      text-align: center;
     }
-    #menuCard h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 36px; margin: 0 0 8px; }
-    #menuCard p { color: #b7a8d4; margin: 0 0 18px; }
-    #menuCard button, #menuCard a {
-      display: block; width: 100%; margin: 8px 0; padding: 12px 14px;
+    #menuCard h1 {
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(42px, 8vw, 64px); line-height: .9; margin-bottom: 8px;
+    }
+    #menuWho { color: #b7a8d4; margin-bottom: 24px; }
+    #menuCard button, #menuCard a.item {
+      display: block; width: 100%; margin: 8px 0; padding: 13px 14px;
       border-radius: 999px; border: 1px solid rgba(214,186,255,.35);
-      background: rgba(255,255,255,.04); color: #f4edff; font: inherit; cursor: pointer; text-decoration: none;
+      background: rgba(255,255,255,.04); color: #f4edff;
+      font: inherit; cursor: pointer; text-decoration: none;
     }
     #menuCard button.primary {
       background: linear-gradient(180deg, #e0c2ff, #b56bff 40%, #6d2bff);
       color: #14081f; border: 0; font-weight: 700;
     }
-    #menuCard button:hover, #menuCard a:hover { box-shadow: 0 0 22px rgba(181,107,255,.45); }
+    #versePick { display: flex; gap: 8px; margin: 10px 0 4px; }
+    #versePick button { flex: 1; margin: 0; }
+    #versePick button.active { box-shadow: 0 0 0 1px #c9a6ff; }
+    canvas { width: min(960px, 100%); height: auto; background: #0d1020; border: 1px solid rgba(214,186,255,.25); }
+    #hud {
+      width: min(960px, 100%); display: flex; justify-content: space-between;
+      color: #b7a8d4; font-size: 13px;
+    }
+    #hud button {
+      background: transparent; color: #e3c9ff; border: 1px solid rgba(214,186,255,.3);
+      padding: 6px 10px; border-radius: 999px; cursor: pointer; font: inherit;
+    }
   </style>
 </head>
 <body>
-  <button type="button" id="menuBtn">Menü</button>
-  <div id="wrap">
-    <header>
-      <h1>ENDLESS VERSES</h1>
-      <p id="verseName">Hub</p>
-    </header>
-    <canvas id="game" width="960" height="540"></canvas>
-    <footer>ESC Menü · A/D laufen · Leertaste springen</footer>
-  </div>
+  <div class="chroma"></div>
+
   <div id="menu">
     <div id="menuCard">
-      <h2>Menü</h2>
+      <h1>Endless<br>Verses</h1>
       <p id="menuWho"></p>
-      <button type="button" class="primary" id="resumeBtn">Weiter</button>
-      <button type="button" id="verseHub">Vers: Hub</button>
-      <button type="button" id="verseSoul">Vers: Soul</button>
-      <button type="button" id="saveBtn">Speichern</button>
-      <a href="index.html">Website</a>
+      <button type="button" class="primary" id="startBtn">Spielen</button>
+      <div id="versePick">
+        <button type="button" class="active" id="pickHub">Hub</button>
+        <button type="button" id="pickSoul">Soul</button>
+      </div>
+      <a class="item" href="index.html">Zurück zur Website</a>
       <button type="button" id="logoutPlay">Logout</button>
     </div>
   </div>
+
+  <div id="play">
+    <div id="hud">
+      <span id="verseName">Hub</span>
+      <button type="button" id="toMenu">Hauptmenü</button>
+    </div>
+    <canvas id="game" width="960" height="540"></canvas>
+    <p style="color:#7d738c;font-size:13px">A/D laufen · Leertaste springen</p>
+  </div>
+
   <script src="js/auth.js"></script>
   <script>
     if (!EVAuth.current()) location.href = "index.html";
