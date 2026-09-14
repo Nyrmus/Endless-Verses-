@@ -7,59 +7,28 @@ window.EVLoadout = (function () {
   const ITEMS = {
     pet: [
       { id: "none", name: "Leer", r: "common" },
-      { id: "shade", name: "Schattengeist", r: "rare" },
-      { id: "ember", name: "Funkenwolf", r: "epic" }
+      { id: "shade", name: "Schattengeist", r: "rare" }
     ],
     weapon: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "blade", name: "Leerenklinge", r: "epic" },
-      { id: "staff", name: "Versstab", r: "legendary" }
+      { id: "blade", name: "Wurfmesser", r: "rare" },
+      { id: "obsidian", name: "Obsidian-Messer", r: "epic" },
+      { id: "veil", name: "Schleier-Messer", r: "legendary" },
+      { id: "none", name: "Leer", r: "common" }
     ],
-    helm: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "iron", name: "Eisenvisier", r: "rare" },
-      { id: "veil", name: "Schleierkrone", r: "legendary" }
-    ],
-    chest: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "plate", name: "Plattenbrust", r: "rare" },
-      { id: "wrap", name: "Seidenwickel", r: "epic" }
-    ],
-    pants: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "greaves", name: "Beinschienen", r: "rare" },
-      { id: "cloth", name: "Wanderhose", r: "common" }
-    ],
-    shoes: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "boots", name: "Marschstiefel", r: "rare" },
-      { id: "light", name: "Leichttritt", r: "epic" }
-    ],
-    armor: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "mail", name: "Kettenhemd", r: "rare" },
-      { id: "glass", name: "Glaspanzer", r: "legendary" }
-    ],
-    cloak: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "night", name: "Nachtmantel", r: "epic" },
-      { id: "royal", name: "Königsumhang", r: "legendary" }
-    ],
-    gloves: [
-      { id: "none", name: "Leer", r: "common" },
-      { id: "grip", name: "Griffleder", r: "rare" },
-      { id: "arc", name: "Funkenhand", r: "epic" }
-    ]
+    helm: [{ id: "none", name: "Leer", r: "common" }, { id: "veil", name: "Schleierhaube", r: "epic" }],
+    chest: [{ id: "none", name: "Leer", r: "common" }, { id: "wrap", name: "Nachtwickel", r: "rare" }],
+    pants: [{ id: "none", name: "Leer", r: "common" }, { id: "cloth", name: "Schattentuch", r: "rare" }],
+    shoes: [{ id: "none", name: "Leer", r: "common" }, { id: "light", name: "Lautlos", r: "epic" }],
+    armor: [{ id: "none", name: "Leer", r: "common" }, { id: "mail", name: "Schuppen", r: "rare" }],
+    cloak: [{ id: "night", name: "Nachtmantel", r: "epic" }, { id: "none", name: "Leer", r: "common" }],
+    gloves: [{ id: "none", name: "Leer", r: "common" }, { id: "grip", name: "Wurfleder", r: "rare" }]
   };
-
   function key() {
     const u = window.EVAuth && EVAuth.current();
     return "ev-loadout-" + (u ? u.name : "guest");
   }
   function empty() {
-    const o = {};
-    SLOTS.forEach((s) => { o[s] = "none"; });
-    return o;
+    return { pet: "none", weapon: "blade", helm: "none", chest: "none", pants: "none", shoes: "none", armor: "none", cloak: "night", gloves: "none" };
   }
   function get() {
     try { return Object.assign(empty(), JSON.parse(localStorage.getItem(key()) || "{}")); }
