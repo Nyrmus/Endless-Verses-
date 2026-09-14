@@ -4,7 +4,7 @@
   const preview = document.getElementById("preview");
   const pctx = preview.getContext("2d");
   pctx.imageSmoothingEnabled = true;
-  const ninja = new EVNinja({ x: 180, y: 250, scale: 1.65 });
+  const ninja = new EVNinja({ x: 210, y: 400, scale: 2.15 });
   const tokenEl = document.getElementById("tokenCount");
   const eqEl = document.getElementById("eqWeapon");
 
@@ -125,13 +125,8 @@
     last = now;
     ninja.update(dt, { run: false });
     pctx.clearRect(0, 0, preview.width, preview.height);
-    const g = pctx.createLinearGradient(0, 0, 0, preview.height);
-    g.addColorStop(0, "rgba(20,12,36,0)");
-    g.addColorStop(1, "rgba(0,0,0,0.35)");
-    pctx.fillStyle = g;
-    pctx.fillRect(0, 0, preview.width, preview.height);
     pctx.fillStyle = "rgba(0,0,0,0.35)";
-    pctx.beginPath(); pctx.ellipse(180, 262, 54, 10, 0, 0, Math.PI * 2); pctx.fill();
+    pctx.beginPath(); pctx.ellipse(210, 418, 70, 12, 0, 0, Math.PI * 2); pctx.fill();
     ninja.draw(pctx, weaponId());
     requestAnimationFrame(tick);
   }
