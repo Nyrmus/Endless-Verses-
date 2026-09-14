@@ -107,7 +107,53 @@ EVNinja.prototype.applyPose = function () {
     p.la = -1.35; p.ra = 1.15; p.lu = 0.72; p.ru = -0.55;
   }
 };
+EVNinja.prototype.spriteKey = function () {
+  const s = this.state;
+  if (s === "run" || s === "dash") return "run";
+  if (s === "jump" || s === "throw") return "jump";
+  if (s === "parry") return "parry";
+  return "idle";
+};
+EVNinja.prototype.drawSprite = function (ctx, img) {
+  const s = this.scale;
+  const bob = this.state === "idle" ? Math.sin(this.t * 2.3) * 2.2 : (this.state === "run" ? Math.abs(Math.sin(this.t * 10.5)) * -3 : 0);
+  const h = 188 * s;
+  const w = h * (img.width / img.height);
+  ctx.save();
+  ctx.translate(this.x, this.y);
+  ctx.fillStyle = "rgba(0,0,0,0.55)";
+  ctx.beginPath();
+  ctx.ellipse(0, 6, 28 * s, 7 * s, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (this.state === "dash") {
+    ctx.save();
+    ctx.globalAlpha = 0.22;
+    ctx.translate(-this.dir * 26 * s, 0);
+    ctx.scale(this.dir, 1);
+    ctx.drawImage(img, -w / 2, -h + 8 + bob, w, h);
+    ctx.restore();
+    ctx.save();
+    ctx.globalAlpha = 0.1;
+    ctx.translate(-this.dir * 48 * s, 0);
+    ctx.scale(this.dir, 1);
+    ctx.drawImage(img, -w / 2, -h + 8 + bob, w, h);
+    ctx.restore();
+  }
+  ctx.scale(this.dir, 1);
+  if (this.state === "parry") {
+    ctx.shadowColor = "rgba(190,160,255,0.55)";
+    ctx.shadowBlur = 18;
+  }
+  ctx.drawImage(img, -w / 2, -h + 8 + bob, w, h);
+  ctx.restore();
+};
 EVNinja.prototype.draw = function (ctx, weapon) {
+  const art = window.EVArt && EVArt.imgs;
+  const img = art && art[this.spriteKey()];
+  if (img && img.width) {
+    this.drawSprite(ctx, img);
+    return;
+  }
   const s = this.scale;
   ctx.save();
   ctx.translate(this.x, this.y);

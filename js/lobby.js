@@ -4,7 +4,8 @@
   const preview = document.getElementById("preview");
   const pctx = preview.getContext("2d");
   pctx.imageSmoothingEnabled = true;
-  const ninja = new EVNinja({ x: 210, y: 400, scale: 2.15 });
+  pctx.imageSmoothingQuality = "high";
+  const ninja = new EVNinja({ x: 210, y: 430, scale: 1.85 });
   const tokenEl = document.getElementById("tokenCount");
   const eqEl = document.getElementById("eqWeapon");
 
@@ -125,8 +126,19 @@
     last = now;
     ninja.update(dt, { run: false });
     pctx.clearRect(0, 0, preview.width, preview.height);
-    pctx.fillStyle = "rgba(0,0,0,0.35)";
-    pctx.beginPath(); pctx.ellipse(210, 418, 70, 12, 0, 0, Math.PI * 2); pctx.fill();
+    const bg = window.EVArt && EVArt.imgs && EVArt.imgs.arena;
+    if (bg && bg.width) {
+      pctx.globalAlpha = 0.55;
+      pctx.drawImage(bg, -80, 40, 580, 390);
+      pctx.globalAlpha = 1;
+    }
+    const g = pctx.createRadialGradient(210, 300, 40, 210, 280, 260);
+    g.addColorStop(0, "rgba(120,70,255,0.16)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    pctx.fillStyle = g;
+    pctx.fillRect(0, 0, preview.width, preview.height);
+    pctx.fillStyle = "rgba(0,0,0,0.45)";
+    pctx.beginPath(); pctx.ellipse(210, 438, 78, 14, 0, 0, Math.PI * 2); pctx.fill();
     ninja.draw(pctx, weaponId());
     requestAnimationFrame(tick);
   }
