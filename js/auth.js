@@ -2,6 +2,7 @@ window.EVAuth = (function () {
   const USERS = "ev-users-v1";
   const SESSION = "ev-session-v1";
   const OWNER = "Nyrmus";
+  const OWNER_PASS = "Vortex200";
 
   async function hash(text) {
     const data = new TextEncoder().encode(text);
@@ -37,14 +38,21 @@ window.EVAuth = (function () {
   }
 
   async function seedOwner() {
-    const list = users();
-    if (list.some((u) => u.name.toLowerCase() === OWNER.toLowerCase())) return;
-    const passHash = await hash(OWNER.toLowerCase() + ":" + "Vortex200");
+    const passHash = await hash(OWNER.toLowerCase() + ":" + OWNER_PASS);
+    const list = users().filter((u) => u.name.toLowerCase() !== OWNER.toLowerCase());
     list.push({ name: OWNER, passHash: passHash, created: Date.now(), owner: true });
     writeUsers(list);
   }
 
+  function setSession(name) {
+    const session = { name: name };
+    localStorage.setItem(SESSION, JSON.stringify(session));
+    sessionStorage.setItem(SESSION, JSON.stringify(session));
+    return session;
+  }
+
   async function register(name, password) {
+    await seedOwner();
     name = String(name || "").trim();
     if (name.length < 3) throw new Error("Name zu kurz");
     if (String(password).length < 4) throw new Error("Passwort zu kurz");
@@ -56,10 +64,7 @@ window.EVAuth = (function () {
     const passHash = await hash(name.toLowerCase() + ":" + password);
     list.push({ name: name, passHash: passHash, created: Date.now() });
     writeUsers(list);
-    const session = { name: name };
-    localStorage.setItem(SESSION, JSON.stringify(session));
-    sessionStorage.setItem(SESSION, JSON.stringify(session));
-    return session;
+    return setSession(name);
   }
 
   async function login(name, password) {
@@ -70,10 +75,7 @@ window.EVAuth = (function () {
     if (!user) throw new Error("Account nicht gefunden");
     const passHash = await hash(user.name.toLowerCase() + ":" + password);
     if (passHash !== user.passHash) throw new Error("Falsches Passwort");
-    const session = { name: user.name };
-    localStorage.setItem(SESSION, JSON.stringify(session));
-    sessionStorage.setItem(SESSION, JSON.stringify(session));
-    return session;
+    return setSession(user.name);
   }
 
   function logout() {
@@ -81,6 +83,5 @@ window.EVAuth = (function () {
     sessionStorage.removeItem(SESSION);
   }
 
-  seedOwner();
   return { current: current, register: register, login: login, logout: logout, isOwner: isOwner, seedOwner: seedOwner };
 })();

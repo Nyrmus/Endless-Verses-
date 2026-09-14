@@ -1,4 +1,7 @@
 (function () {
+  const overlay = document.getElementById("accountOverlay");
+  const openBtn = document.getElementById("accountOpen");
+  const closeBtn = document.getElementById("accountClose");
   const tabLogin = document.getElementById("tabLogin");
   const tabRegister = document.getElementById("tabRegister");
   const loginForm = document.getElementById("loginForm");
@@ -7,8 +10,20 @@
   const sessionEl = document.getElementById("session");
   const playBtn = document.getElementById("playBtn");
   const logoutBtn = document.getElementById("logoutBtn");
-  const panel = document.getElementById("accountPanel");
-  const toggle = document.getElementById("accountToggle");
+
+  function open() {
+    overlay.classList.add("on");
+    overlay.setAttribute("aria-hidden", "false");
+    if (!EVAuth.current()) {
+      setTimeout(function () {
+        document.getElementById("loginName").focus();
+      }, 30);
+    }
+  }
+  function close() {
+    overlay.classList.remove("on");
+    overlay.setAttribute("aria-hidden", "true");
+  }
 
   function setMode(mode) {
     const loginOn = mode === "login";
@@ -16,70 +31,62 @@
     tabRegister.classList.toggle("active", !loginOn);
     loginForm.classList.toggle("off", !loginOn);
     registerForm.classList.toggle("off", loginOn);
-    if (msg) msg.textContent = "";
-    const focusId = loginOn ? "loginName" : "regName";
-    const el = document.getElementById(focusId);
-    if (el && !panel.hidden) el.focus();
+    msg.textContent = "";
   }
 
   function show() {
     const user = EVAuth.current();
     if (user) {
       sessionEl.textContent = user.name;
-      logoutBtn.hidden = false;
-      playBtn.classList.remove("locked");
-      playBtn.setAttribute("href", "play.html");
+      logoutBtn.classList.remove("off");
       loginForm.classList.add("off");
       registerForm.classList.add("off");
       tabLogin.classList.add("off");
       tabRegister.classList.add("off");
+      playBtn.classList.remove("locked");
+      playBtn.setAttribute("href", "play.html");
     } else {
       sessionEl.textContent = "Konto";
-      logoutBtn.hidden = true;
-      playBtn.classList.add("locked");
-      playBtn.setAttribute("href", "#top");
+      logoutBtn.classList.add("off");
       tabLogin.classList.remove("off");
       tabRegister.classList.remove("off");
       setMode("login");
+      playBtn.classList.add("locked");
+      playBtn.setAttribute("href", "#top");
     }
   }
 
-  toggle.addEventListener("click", function (e) {
+  openBtn.addEventListener("click", function (e) {
     e.preventDefault();
-    e.stopPropagation();
-    panel.hidden = !panel.hidden;
-    if (!panel.hidden && !EVAuth.current()) {
-      setMode(tabRegister.classList.contains("active") ? "register" : "login");
-    }
+    open();
+  });
+  closeBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    close();
+  });
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay) close();
   });
 
   tabLogin.addEventListener("click", function (e) {
     e.preventDefault();
-    e.stopPropagation();
     setMode("login");
   });
   tabRegister.addEventListener("click", function (e) {
     e.preventDefault();
-    e.stopPropagation();
     setMode("register");
-  });
-
-  panel.addEventListener("mousedown", function (e) {
-    e.stopPropagation();
-  });
-  panel.addEventListener("click", function (e) {
-    e.stopPropagation();
   });
 
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    msg.textContent = "";
     try {
       await EVAuth.login(
         document.getElementById("loginName").value,
         document.getElementById("loginPass").value
       );
       show();
-      panel.hidden = true;
+      close();
     } catch (err) {
       msg.textContent = err.message;
     }
@@ -87,13 +94,14 @@
 
   registerForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    msg.textContent = "";
     try {
       await EVAuth.register(
         document.getElementById("regName").value,
         document.getElementById("regPass").value
       );
       show();
-      panel.hidden = true;
+      close();
     } catch (err) {
       msg.textContent = err.message;
     }
@@ -104,6 +112,5 @@
     show();
   });
 
-  if (window.EVAuth && EVAuth.seedOwner) EVAuth.seedOwner();
-  show();
+  EVAuth.seedOwner().then(show);
 })();
