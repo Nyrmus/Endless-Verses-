@@ -11,14 +11,12 @@ window.EVNinja = function (opts) {
   this.anim = 0;
   this.stamina = 100;
   this.knives = 6;
-  this.reload = 0;
   this.parryT = 0;
   this.scale = o.scale || 1;
   this.pose = {
-    hip: 0, torso: 0,
-    lu: 0.2, ll: 0.15, ru: -0.25, rl: 0.2,
-    la: 0.4, lf: 0.2, ra: -0.35, rf: 0.15,
-    head: 0
+    hip: 0, torso: 0, head: 0,
+    lu: 0.12, ll: 0.18, ru: -0.16, rl: 0.2,
+    la: 0.28, lf: 0.18, ra: -0.32, rf: 0.12
   };
 };
 EVNinja.prototype.setState = function (s) {
@@ -29,8 +27,7 @@ EVNinja.prototype.setState = function (s) {
   this.anim = 0;
 };
 EVNinja.prototype.parry = function () {
-  if (this.stamina < 18) return false;
-  if (this.state === "parry") return false;
+  if (this.stamina < 18 || this.state === "parry") return false;
   this.stamina -= 18;
   this.state = "parry";
   this.anim = 0;
@@ -43,7 +40,7 @@ EVNinja.prototype.dash = function () {
   this.stamina -= 22;
   this.state = "dash";
   this.anim = 0;
-  this.vx = this.dir * 320;
+  this.vx = this.dir * 340;
   if (window.EV && EV.audio) EV.audio.dash();
   return true;
 };
@@ -67,13 +64,9 @@ EVNinja.prototype.update = function (dt, input) {
     this.parryT -= dt;
     if (this.parryT <= 0) this.state = "idle";
   }
-  if (this.state === "reload" && this.anim > 0.32) {
-    this.knives = 6;
-    this.state = "idle";
-  }
+  if (this.state === "reload" && this.anim > 0.32) { this.knives = 6; this.state = "idle"; }
   if (this.state === "throw" && this.anim > 0.45) this.state = "idle";
   if (this.state === "dash" && this.anim > 0.22) this.state = input.run ? "run" : "idle";
-
   if (this.state !== "parry" && this.state !== "throw" && this.state !== "reload") {
     if (!this.onGround) this.state = "jump";
     else if (input.run) this.state = "run";
@@ -82,82 +75,171 @@ EVNinja.prototype.update = function (dt, input) {
   this.applyPose();
 };
 EVNinja.prototype.applyPose = function () {
-  const a = this.anim;
-  const p = this.pose;
-  const L = EV.parts.lerp;
+  const a = this.anim, p = this.pose, L = EV.parts.lerp;
   if (this.state === "idle") {
-    const b = Math.sin(this.t * 3) * 0.04;
-    p.torso = b; p.hip = -b * 0.5; p.head = -b * 0.3;
-    p.lu = 0.15 + b; p.ll = 0.12; p.ru = -0.18; p.rl = 0.16;
-    p.la = 0.35; p.lf = 0.2; p.ra = -0.4; p.rf = 0.1;
+    const b = Math.sin(this.t * 2.4) * 0.03;
+    p.torso = b; p.head = -b * 0.4;
+    p.lu = 0.1 + b; p.ll = 0.16; p.ru = -0.12; p.rl = 0.18;
+    p.la = 0.22; p.lf = 0.16; p.ra = -0.28; p.rf = 0.1;
   } else if (this.state === "run") {
-    const s = Math.sin(this.t * 12);
-    p.torso = 0.12; p.hip = s * 0.08;
-    p.lu = s * 0.7; p.ll = 0.35 + s * 0.35;
-    p.ru = -s * 0.7; p.rl = 0.35 - s * 0.35;
-    p.la = -s * 0.8; p.ra = s * 0.8; p.lf = 0.2; p.rf = 0.2;
-    p.head = -0.08;
+    const s = Math.sin(this.t * 10.5);
+    p.torso = 0.1; p.hip = s * 0.06; p.head = -0.06;
+    p.lu = s * 0.62; p.ll = 0.32 + Math.max(0, s) * 0.38;
+    p.ru = -s * 0.62; p.rl = 0.32 + Math.max(0, -s) * 0.38;
+    p.la = -s * 0.72; p.ra = s * 0.72; p.lf = 0.18; p.rf = 0.18;
   } else if (this.state === "jump") {
-    p.torso = -0.15; p.lu = -0.5; p.ll = 0.7; p.ru = 0.2; p.rl = 0.4;
-    p.la = -1.1; p.ra = 0.6; p.head = 0.1;
+    p.torso = -0.12; p.head = 0.08;
+    p.lu = -0.45; p.ll = 0.62; p.ru = 0.18; p.rl = 0.38;
+    p.la = -1.05; p.ra = 0.55;
   } else if (this.state === "throw") {
     const k = EV.parts.clamp(a / 0.45, 0, 1);
-    p.ra = L(0.2, -2.4, k); p.rf = L(0.2, 0.5, k);
-    p.torso = L(0, -0.25, k); p.la = 0.5;
+    p.ra = L(0.15, -2.35, k); p.rf = L(0.12, 0.45, k);
+    p.torso = L(0, -0.22, k); p.la = 0.45;
   } else if (this.state === "reload") {
     const k = EV.parts.clamp(a / 0.32, 0, 1);
-    p.ra = L(-0.2, 0.9, k); p.rf = L(0.1, 1.1, k);
-    p.torso = 0.2;
+    p.ra = L(-0.15, 0.85, k); p.rf = L(0.1, 1.05, k); p.torso = 0.18;
   } else if (this.state === "parry") {
-    p.torso = -0.05; p.la = -0.9; p.lf = 1.2; p.ra = 0.8; p.rf = 0.9;
-    p.lu = 0.25; p.ru = -0.15; p.head = -0.05;
+    p.torso = -0.04; p.head = -0.04;
+    p.la = -0.85; p.lf = 1.15; p.ra = 0.72; p.rf = 0.85;
+    p.lu = 0.22; p.ru = -0.12;
   } else if (this.state === "dash") {
-    p.torso = 0.35; p.la = -1.4; p.ra = 1.2; p.lu = 0.8; p.ru = -0.6; p.head = 0.15;
+    p.torso = 0.32; p.head = 0.12;
+    p.la = -1.35; p.ra = 1.15; p.lu = 0.72; p.ru = -0.55;
   }
 };
 EVNinja.prototype.draw = function (ctx, weapon) {
-  const d = this.dir;
   const s = this.scale;
   ctx.save();
   ctx.translate(this.x, this.y);
-  ctx.scale(d * s, s);
-  ctx.strokeStyle = "rgba(0,0,0,0.45)";
-  ctx.fillStyle = "#0b0b10";
+  ctx.scale(this.dir * s, s);
   const p = this.pose;
-  function limb(ang1, len1, ang2, len2, w) {
-    ctx.save();
-    ctx.rotate(ang1);
-    ctx.fillRect(-w / 2, 0, w, len1);
-    ctx.translate(0, len1);
-    ctx.rotate(ang2);
-    ctx.fillRect(-w / 2 + 0.5, 0, w - 1, len2);
-    ctx.restore();
+
+  function bone(w1, len, w2) {
+    ctx.beginPath();
+    ctx.moveTo(-w1 / 2, 0);
+    ctx.lineTo(w1 / 2, 0);
+    ctx.lineTo((w2 || w1 * 0.75) / 2, len);
+    ctx.lineTo(-(w2 || w1 * 0.75) / 2, len);
+    ctx.closePath();
+    ctx.fill();
   }
-  ctx.save(); ctx.rotate(p.lu); ctx.translate(6, 8); limb(0, 18, p.ll, 18, 7); ctx.restore();
-  ctx.save(); ctx.rotate(p.ru); ctx.translate(-6, 8); limb(0, 18, p.rl, 18, 7); ctx.restore();
+  function cap(x, y, rx, ry, col) {
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = "rgba(0,0,0,0.4)";
+  ctx.beginPath();
+  ctx.ellipse(0, 8, 22, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "#121218";
+  ctx.save();
+  ctx.translate(-7, 2);
+  ctx.rotate(p.lu);
+  bone(11, 26, 9);
+  ctx.translate(0, 26);
+  ctx.rotate(p.ll);
+  ctx.fillStyle = "#0c0c12";
+  bone(9, 25, 7);
+  cap(0, 26, 5, 3, "#0a0a10");
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(7, 2);
+  ctx.rotate(p.ru);
+  ctx.fillStyle = "#101016";
+  bone(11, 26, 9);
+  ctx.translate(0, 26);
+  ctx.rotate(p.rl);
+  ctx.fillStyle = "#0c0c12";
+  bone(9, 25, 7);
+  cap(0, 26, 5, 3, "#0a0a10");
+  ctx.restore();
+
   ctx.save();
   ctx.rotate(p.torso);
-  ctx.fillStyle = "#0a0a0e";
+  ctx.fillStyle = "#0d0d14";
   ctx.beginPath();
-  ctx.moveTo(-11, -22); ctx.lineTo(11, -22); ctx.lineTo(13, 10); ctx.lineTo(-13, 10);
-  ctx.closePath(); ctx.fill();
-  ctx.fillStyle = "#16161c";
-  ctx.fillRect(-10, -8, 20, 4);
-  ctx.save(); ctx.translate(-12, -18); ctx.rotate(p.la); ctx.fillStyle = "#0b0b10"; ctx.fillRect(-3, 0, 6, 16); ctx.translate(0, 16); ctx.rotate(p.lf); ctx.fillRect(-2.5, 0, 5, 14); ctx.restore();
-  ctx.save(); ctx.translate(12, -18); ctx.rotate(p.ra); ctx.fillStyle = "#0b0b10"; ctx.fillRect(-3, 0, 6, 16); ctx.translate(0, 16); ctx.rotate(p.rf);
-  ctx.fillRect(-2.5, 0, 5, 14);
+  ctx.moveTo(-16, -36);
+  ctx.lineTo(16, -36);
+  ctx.lineTo(13, 6);
+  ctx.lineTo(-11, 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#17171f";
+  ctx.beginPath();
+  ctx.moveTo(-15, -34);
+  ctx.lineTo(15, -34);
+  ctx.lineTo(11, -8);
+  ctx.lineTo(-11, -8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#0a0a10";
+  ctx.fillRect(-10, -6, 20, 4);
+  cap(-15, -32, 6, 7, "#14141c");
+  cap(15, -32, 6, 7, "#14141c");
+
+  ctx.save();
+  ctx.translate(-16, -30);
+  ctx.rotate(p.la);
+  ctx.fillStyle = "#12121a";
+  bone(8, 22, 7);
+  ctx.translate(0, 22);
+  ctx.rotate(p.lf);
+  ctx.fillStyle = "#0e0e16";
+  bone(7, 20, 6);
+  cap(0, 21, 4.5, 3.5, "#1a1714");
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(16, -30);
+  ctx.rotate(p.ra);
+  ctx.fillStyle = "#12121a";
+  bone(8, 22, 7);
+  ctx.translate(0, 22);
+  ctx.rotate(p.rf);
+  ctx.fillStyle = "#0e0e16";
+  bone(7, 20, 6);
+  cap(0, 21, 4.5, 3.5, "#1a1714");
   if (weapon !== "none") {
-    ctx.fillStyle = "#c9c4d4";
+    ctx.fillStyle = "#d8d2e0";
     ctx.beginPath();
-    ctx.moveTo(0, 14); ctx.lineTo(3, 28); ctx.lineTo(-1, 27); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#2a2a32"; ctx.fillRect(-2, 12, 4, 4);
+    ctx.moveTo(1, 18);
+    ctx.lineTo(4, 36);
+    ctx.lineTo(-1, 35);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#2b2b34";
+    ctx.fillRect(-2, 16, 5, 4);
   }
   ctx.restore();
-  ctx.fillStyle = "#08080c";
-  ctx.beginPath(); ctx.ellipse(0, -30, 8, 9, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#1a1a22"; ctx.fillRect(-8, -28, 16, 3);
-  ctx.restore();
+
+  ctx.save();
+  ctx.rotate(p.head);
+  ctx.fillStyle = "#1c1612";
+  ctx.beginPath();
+  ctx.ellipse(0, -46, 7.2, 8.4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#0a0a0e";
+  ctx.beginPath();
+  ctx.ellipse(0, -47, 8.2, 9.2, 0, 0, Math.PI * 2);
+  ctx.fill();
   ctx.fillStyle = "#050508";
-  ctx.beginPath(); ctx.moveTo(-6, -38); ctx.lineTo(16, -26); ctx.lineTo(-6, -24); ctx.closePath(); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-8, -50);
+  ctx.quadraticCurveTo(2, -64, 18, -44);
+  ctx.lineTo(8, -40);
+  ctx.quadraticCurveTo(-2, -48, -8, -42);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#0e0e14";
+  ctx.fillRect(-7, -44, 14, 3);
+  ctx.fillStyle = "#1a1a24";
+  ctx.fillRect(-6, -41, 5, 2);
+  ctx.restore();
+  ctx.restore();
   ctx.restore();
 };
