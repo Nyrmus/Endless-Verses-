@@ -18,21 +18,16 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      min-height: 100vh;
-      color: var(--ink);
-      font-family: Syne, sans-serif;
-      background: #04030a;
-      overflow-x: hidden;
+      min-height: 100vh; color: var(--ink); font-family: Syne, sans-serif;
+      background: #04030a; overflow-x: hidden;
     }
     .chroma {
-      position: fixed; inset: -20%;
+      position: fixed; inset: -20%; pointer-events: none; z-index: 0;
       background:
         radial-gradient(40% 35% at 18% 8%, rgba(181,107,255,.45), transparent 58%),
         radial-gradient(32% 28% at 88% 0%, rgba(80,220,255,.16), transparent 55%),
-        radial-gradient(28% 30% at 70% 80%, rgba(255,70,180,.12), transparent 60%),
-        conic-gradient(from 210deg at 50% 20%, rgba(181,107,255,.08), transparent 40%);
+        radial-gradient(28% 30% at 70% 80%, rgba(255,70,180,.12), transparent 60%);
       filter: blur(8px) saturate(1.4);
-      pointer-events: none; z-index: 0;
       animation: drift 18s ease-in-out infinite alternate;
     }
     @keyframes drift {
@@ -47,6 +42,14 @@
       background-size: 72px 72px, 46px 46px;
     }
     a { color: inherit; text-decoration: none; }
+    button, .btn, .diamond, .stars button, #accountToggle {
+      transition: box-shadow .2s ease, transform .2s ease, filter .2s ease;
+    }
+    button:hover, .btn:hover, #accountToggle:hover, .stars button:hover {
+      box-shadow: 0 0 28px rgba(181,107,255,.7);
+      filter: brightness(1.12);
+    }
+    .off { display: none !important; }
     .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 22px 22px 96px; }
     .glass {
       background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.02));
@@ -56,29 +59,23 @@
     }
     .nav {
       display: flex; justify-content: space-between; align-items: center;
-      gap: 16px; padding: 12px 16px 12px 22px; border-radius: 999px;
-      position: relative;
+      gap: 16px; padding: 12px 16px 12px 22px; border-radius: 999px; position: relative;
     }
-    .logo {
-      font-weight: 700; letter-spacing: .28em; font-size: 11px;
-    }
+    .logo { font-weight: 700; letter-spacing: .28em; font-size: 11px; }
     .nav nav { display: flex; gap: 22px; color: var(--mute); font-size: 14px; }
-    .nav nav a:hover { color: #fff; }
     .account-wrap { position: relative; }
     #accountToggle {
-      background: rgba(181,107,255,.12); color: #fff;
-      border: 1px solid var(--line); padding: 9px 14px;
-      border-radius: 999px; cursor: pointer; font: inherit;
+      background: rgba(181,107,255,.12); color: #fff; border: 1px solid var(--line);
+      padding: 9px 14px; border-radius: 999px; cursor: pointer; font: inherit;
     }
     #accountPanel {
       position: absolute; right: 0; top: calc(100% + 12px);
-      width: 300px; padding: 16px; border-radius: 22px; z-index: 8;
+      width: 300px; padding: 16px; border-radius: 22px; z-index: 20;
     }
     .hero { padding: 90px 0 28px; text-align: center; }
     .hero h1 {
-      font-family: "Instrument Serif", serif;
-      font-weight: 400; font-size: clamp(52px, 11vw, 104px);
-      letter-spacing: -.03em; line-height: .88;
+      font-family: "Instrument Serif", serif; font-weight: 400;
+      font-size: clamp(52px, 11vw, 104px); letter-spacing: -.03em; line-height: .88;
       background: linear-gradient(180deg, #fff 20%, #c9a6ff 100%);
       -webkit-background-clip: text; background-clip: text; color: transparent;
       filter: drop-shadow(0 0 40px rgba(181,107,255,.35));
@@ -98,26 +95,55 @@
       background: rgba(255,255,255,.04); color: #e3c9ff; cursor: pointer;
       clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     }
-    .stars button:hover { background: rgba(181,107,255,.35); }
     #rateAvg { margin-top: 12px; color: var(--mute); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
     section { padding: 56px 0 10px; }
-    h2 {
-      font-family: "Instrument Serif", serif;
-      font-weight: 400; font-size: 34px; margin-bottom: 22px;
+    h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; margin-bottom: 22px; }
+    .socials { display: flex; justify-content: center; gap: 42px; flex-wrap: wrap; padding: 20px 0; }
+    .spin-wrap {
+      width: 170px; height: 170px;
+      animation: spinY 7s linear infinite;
+      transform-style: preserve-3d;
     }
-    .socials { display: flex; justify-content: center; gap: 36px; flex-wrap: wrap; padding: 12px 0 20px; }
+    .spin-wrap:nth-child(2) { animation-duration: 8.2s; animation-direction: reverse; }
+    .spin-wrap:nth-child(3) { animation-duration: 6.4s; }
+    @keyframes spinY {
+      from { transform: rotateZ(-2deg) rotateY(0); }
+      to { transform: rotateZ(-2deg) rotateY(360deg); }
+    }
     .diamond {
-      width: 168px; height: 168px;
+      width: 170px; height: 170px;
       clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
       display: flex; align-items: center; justify-content: center;
-      transition: transform .25s ease, box-shadow .25s ease;
     }
-    .diamond:hover { transform: scale(1.06); box-shadow: 0 0 50px rgba(181,107,255,.4); }
-    .diamond-inner { text-align: center; }
-    .diamond .tag {
-      display: block; color: #d7b8ff; font-size: 10px;
-      letter-spacing: .2em; text-transform: uppercase; margin-bottom: 6px;
+    .diamond:hover { box-shadow: 0 0 40px rgba(181,107,255,.75); }
+    .diamond-inner { text-align: center; animation: counter 7s linear infinite; }
+    .spin-wrap:nth-child(2) .diamond-inner { animation-duration: 8.2s; animation-direction: reverse; }
+    .spin-wrap:nth-child(3) .diamond-inner { animation-duration: 6.4s; }
+    @keyframes counter {
+      from { transform: rotateY(0); }
+      to { transform: rotateY(-360deg); }
     }
+    .diamond .tag { display: block; color: #d7b8ff; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
+    .slot-wrap { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+    #slot {
+      display: flex; gap: 10px; padding: 18px; border-radius: 24px;
+    }
+    .reel {
+      width: 72px; height: 88px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; background: rgba(0,0,0,.35); border: 1px solid var(--line);
+    }
+    #slot.jackpot {
+      animation: boom .6s ease 3;
+      box-shadow: 0 0 50px #ff4fd8, 0 0 90px #7b3dff;
+    }
+    @keyframes boom {
+      0%,100% { transform: scale(1) rotate(0); }
+      30% { transform: scale(1.06) rotate(-2deg); }
+      60% { transform: scale(1.08) rotate(2deg); }
+    }
+    .slot-side { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
+    .tokens { letter-spacing: .12em; text-transform: uppercase; color: #d7b8ff; }
     .box { max-width: 560px; padding: 20px; border-radius: 26px; }
     .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
     .tabs button, #logoutBtn, .cmt-actions button {
@@ -134,7 +160,7 @@
     textarea { min-height: 88px; resize: vertical; }
     .msg, #commentErr { color: #ff9ad8; min-height: 1.2em; }
     .muted { color: var(--mute); }
-    .cmt { margin: 12px 0; padding: 16px 16px 14px; border-radius: 20px; }
+    .cmt { margin: 12px 0; padding: 16px; border-radius: 20px; }
     .cmt.pinned { box-shadow: 0 0 0 1px #c9a6ff, 0 0 28px rgba(181,107,255,.2); }
     .cmt header { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
     .owner-badge {
@@ -142,10 +168,9 @@
       color: #fff; background: linear-gradient(90deg, #9b5cff, #6d2bff);
       box-shadow: 0 0 18px rgba(150,80,255,.9);
     }
-    .pin { font-size: 11px; color: #c9a6ff; }
     .cmt-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
     .thread { margin: 10px 0 0 14px; }
-    .thread summary { cursor: pointer; color: #c9a6ff; margin-bottom: 8px; }
+    .thread summary { cursor: pointer; color: #c9a6ff; }
     .note { padding: 10px 12px; margin-bottom: 8px; border-radius: 14px; background: rgba(123,61,255,.22); }
     footer { padding-top: 48px; color: #7d738c; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
   </style>
@@ -158,6 +183,7 @@
       <a class="logo" href="index.html">ENDLESS VERSES</a>
       <nav>
         <a href="#socials">Socials</a>
+        <a href="#slot-sec">Automat</a>
         <a href="#comments-sec">Kommentare</a>
       </nav>
       <div class="account-wrap">
@@ -168,13 +194,13 @@
             <button type="button" id="tabRegister">Registrieren</button>
           </div>
           <form id="loginForm">
-            <label>Name <input id="loginName" required></label>
-            <label>Passwort <input id="loginPass" type="password" required></label>
+            <label>Name <input id="loginName" autocomplete="username"></label>
+            <label>Passwort <input id="loginPass" type="password" autocomplete="current-password"></label>
             <button class="btn" type="submit">Einloggen</button>
           </form>
-          <form id="registerForm" style="display:none">
-            <label>Name <input id="regName" minlength="3"></label>
-            <label>Passwort <input id="regPass" type="password" minlength="4"></label>
+          <form id="registerForm" class="off">
+            <label>Name <input id="regName" autocomplete="username"></label>
+            <label>Passwort <input id="regPass" type="password" autocomplete="new-password"></label>
             <button class="btn" type="submit">Account erstellen</button>
           </form>
           <p id="msg" class="msg"></p>
@@ -189,11 +215,11 @@
         <a id="playBtn" class="btn locked" href="#top">Ins Spiel</a>
       </div>
       <div class="stars" aria-label="Bewerten">
-        <button type="button" data-star="1"><span>1</span></button>
-        <button type="button" data-star="2"><span>2</span></button>
-        <button type="button" data-star="3"><span>3</span></button>
-        <button type="button" data-star="4"><span>4</span></button>
-        <button type="button" data-star="5"><span>5</span></button>
+        <button type="button" data-star="1">1</button>
+        <button type="button" data-star="2">2</button>
+        <button type="button" data-star="3">3</button>
+        <button type="button" data-star="4">4</button>
+        <button type="button" data-star="5">5</button>
       </div>
       <p id="rateAvg">Noch keine Bewertung</p>
     </div>
@@ -201,9 +227,26 @@
     <section id="socials">
       <h2>Socials</h2>
       <div class="socials">
-        <a class="diamond glass" href="https://x.com/Nyrmus8" target="_blank" rel="noopener"><span class="diamond-inner"><span class="tag">X</span>Nyrmus8</span></a>
-        <a class="diamond glass" href="https://www.tiktok.com/@nyrmus" target="_blank" rel="noopener"><span class="diamond-inner"><span class="tag">TikTok</span>nyrmus</span></a>
-        <a class="diamond glass" href="https://www.reddit.com/user/Jolly_Dot_2995/" target="_blank" rel="noopener"><span class="diamond-inner"><span class="tag">Reddit</span>Nyrmus</span></a>
+        <a class="spin-wrap" href="https://x.com/Nyrmus8" target="_blank" rel="noopener"><span class="diamond glass"><span class="diamond-inner"><span class="tag">X</span>Nyrmus8</span></span></a>
+        <a class="spin-wrap" href="https://www.tiktok.com/@nyrmus" target="_blank" rel="noopener"><span class="diamond glass"><span class="diamond-inner"><span class="tag">TikTok</span>nyrmus</span></span></a>
+        <a class="spin-wrap" href="https://www.reddit.com/user/Jolly_Dot_2995/" target="_blank" rel="noopener"><span class="diamond glass"><span class="diamond-inner"><span class="tag">Reddit</span>Nyrmus</span></span></a>
+      </div>
+    </section>
+
+    <section id="slot-sec">
+      <h2>Community-Automat</h2>
+      <div class="slot-wrap">
+        <div id="slot" class="glass">
+          <div class="reel" id="r1">7</div>
+          <div class="reel" id="r2">♥</div>
+          <div class="reel" id="r3">◆</div>
+        </div>
+        <div class="slot-side">
+          <p class="tokens">Tokens · <span id="tokens">100</span></p>
+          <label>Einsatz <input id="bet" type="number" min="1" value="1"></label>
+          <button class="btn" type="button" id="spinBtn">Spin</button>
+          <p id="slotJoke" class="muted">Just for fun. Gewinne sind wertlos.</p>
+        </div>
       </div>
     </section>
 
@@ -231,5 +274,6 @@
   <script src="js/auth.js"></script>
   <script src="js/home.js"></script>
   <script src="js/community.js"></script>
+  <script src="js/slot.js"></script>
 </body>
 </html>
