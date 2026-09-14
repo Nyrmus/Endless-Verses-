@@ -14,7 +14,6 @@
       position: fixed; inset: 0; pointer-events: none;
       background:
         radial-gradient(50% 60% at 62% 40%, rgba(120,60,255,.22), transparent 60%),
-        radial-gradient(30% 30% at 20% 80%, rgba(255,180,70,.06), transparent 70%),
         linear-gradient(180deg, #120c1c, #05040a);
     }
     #who { position: fixed; top: 18px; right: 24px; z-index: 6; letter-spacing: .2em; font-size: 11px; text-transform: uppercase; color: #d7c6ff; }
@@ -45,39 +44,28 @@
     .meta p { color: #cbb8ef; font-size: 14px; margin: 6px 0; }
     #modStrip {
       height: 128px; border-top: 1px solid rgba(214,186,255,.16);
-      display: flex; gap: 10px; padding: 14px 22px; overflow-x: auto; align-items: stretch;
+      display: flex; gap: 10px; padding: 14px 22px; overflow-x: auto;
       background: rgba(0,0,0,.28);
     }
     .mod-mini {
       min-width: 160px; padding: 12px; border: 1px solid rgba(214,186,255,.2);
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
-      display: flex; flex-direction: column; justify-content: space-between;
     }
     .mod-mini.locked, .mod-card.locked { position: relative; }
     .mod-mini.locked:after, .panel.locked-panel:after {
       content: "IN DEVELOPMENT"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
       background: rgba(6,4,12,.55); letter-spacing: .16em; font-size: 10px; pointer-events: none;
     }
-    .panel {
-      display: none; position: fixed; inset: 0; z-index: 8; background: rgba(5,4,10,.86);
-      padding: 70px 40px 40px; overflow: auto;
-    }
+    .panel { display: none; position: fixed; inset: 0; z-index: 8; background: rgba(5,4,10,.86); padding: 70px 40px 40px; overflow: auto; }
     .panel.on { display: block; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
     .card, .mod-card, .slot, .item {
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
       border: 1px solid rgba(214,186,255,.18); padding: 16px; color: inherit; text-align: left;
     }
-    .card h3, .mod-card h3 { font-family: Cinzel, serif; font-weight: 500; margin-bottom: 8px; }
-    .card em { color: #c9a6ff; font-style: normal; font-size: 12px; }
-    .card p { color: #cbb8ef; font-size: 13px; margin: 6px 0; }
-    .x {
-      position: absolute; top: 18px; right: 22px; background: transparent; color: #fff;
-      border: 1px solid rgba(214,186,255,.3); padding: 6px 12px; cursor: pointer; font: inherit;
-    }
+    .x { position: absolute; top: 18px; right: 22px; background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3); padding: 6px 12px; cursor: pointer; font: inherit; }
     .slot, .item { display: block; width: 100%; margin: 0 0 8px; cursor: pointer; font: inherit; }
     .slot.on, .item.on { border-color: #f0b429; }
-    .slot small { display: block; color: #9b8fb8; font-size: 10px; letter-spacing: .14em; }
     .load-grid { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
     #play { display: none; position: fixed; inset: 0; z-index: 4; background: #09080f; }
     #play.on { display: block; }
@@ -86,10 +74,11 @@
       position: absolute; top: 0; left: 0; right: 0; z-index: 5;
       display: flex; justify-content: space-between; align-items: center;
       padding: 16px 22px; font-size: 12px; letter-spacing: .12em;
-      background: linear-gradient(180deg, rgba(0,0,0,.45), transparent);
+      background: linear-gradient(180deg, rgba(0,0,0,.45), transparent); gap: 12px;
     }
-    #stam { width: 160px; height: 7px; background: #1a1620; border: 1px solid rgba(214,186,255,.2); }
+    #stam, #hp { width: 140px; height: 7px; background: #1a1620; border: 1px solid rgba(214,186,255,.2); }
     #stamHud { height: 100%; width: 100%; background: linear-gradient(90deg, #8a6bff, #e0c2ff); }
+    #hpHud { height: 100%; width: 100%; background: linear-gradient(90deg, #ff5a4a, #ffc08a); }
     #hud button { background: transparent; color: #fff; border: 1px solid rgba(214,186,255,.3); padding: 6px 10px; cursor: pointer; font: inherit; }
     #hint { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: #8a7aa8; font-size: 12px; z-index: 5; }
     button:disabled { opacity: .45; cursor: not-allowed; }
@@ -100,7 +89,6 @@
   <div class="fx"></div>
   <div id="who"></div>
   <div id="tokens">TOKENS · <span id="tokenCount">0</span></div>
-
   <div id="lobby">
     <div class="row">
       <nav class="side">
@@ -126,7 +114,6 @@
     </div>
     <div id="modStrip"></div>
   </div>
-
   <section id="panelLoadout" class="panel">
     <button class="x" type="button" data-close>Schließen</button>
     <h2 style="margin-bottom:16px;font-family:Cinzel,serif">Loadout</h2>
@@ -147,18 +134,17 @@
     <h2 style="margin-bottom:16px;font-family:Cinzel,serif">Mods · 5 Sterne</h2>
     <div id="modList" class="grid"></div>
   </section>
-
   <div id="play">
     <div id="hud">
-      <span id="verseName">NINJA</span>
+      <span id="verseName">TEMPEL</span>
       <span id="lootHud">GOLD 0</span>
-      <div id="stam"><div id="stamHud"></div></div>
+      <div id="hp" title="Leben"><div id="hpHud"></div></div>
+      <div id="stam" title="Ausdauer"><div id="stamHud"></div></div>
       <button type="button" id="toMenu">Hauptmenü</button>
     </div>
     <canvas id="game" width="1280" height="720"></canvas>
-    <p id="hint">A/D laufen · Leertaste Sprung · F werfen · Q Dash · R Parry</p>
+    <p id="hint">A/D · Sprung · F Messer · Q Dash · R Parry · drei Gegner im Gang</p>
   </div>
-
   <script src="js/auth.js"></script>
   <script>
     if (!EVAuth.current()) location.href = "index.html";
@@ -170,10 +156,12 @@
   <script src="js/art-run.js"></script>
   <script src="js/art-jump.js"></script>
   <script src="js/art-parry.js"></script>
+  <script src="js/art-enemies.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/data.js"></script>
   <script src="js/loadout.js"></script>
   <script src="js/ninja.js"></script>
+  <script src="js/combat.js"></script>
   <script src="js/game.js"></script>
   <script src="js/lobby.js"></script>
 </body>
