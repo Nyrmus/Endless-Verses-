@@ -10,21 +10,21 @@
   const user = window.EVAuth && EVAuth.current();
   const SAVE = "endless-verses-run-" + (user ? user.name : "guest");
   const keys = {};
-  const ninja = new EVNinja({ x: 280, y: 500, scale: 1.22 });
+  const ninja = new EVNinja({ x: 280, y: 420, scale: 1.55 });
   const knives = [];
   const embers = [];
   let gold = 0;
   let hp = 100;
   let playing = false;
   let cam = 0;
-  let W = 1280, H = 720, floor = 600;
+  let W = 1280, H = 720, floor = 480;
   let tWorld = 0;
   let invuln = 0;
 
   const foes = [
-    new EVEnemy({ id: "ashwraith", name: "Ashwraith", x: 780, y: 500, hp: 80, atk: 14, range: 64, scale: 1.05 }),
-    new EVEnemy({ id: "ironbell", name: "Ironbell", x: 1280, y: 500, hp: 220, atk: 22, range: 84, scale: 1.2 }),
-    new EVEnemy({ id: "silkfang", name: "Silkfang", x: 1760, y: 500, hp: 70, atk: 16, range: 58, scale: 1.0 })
+    new EVEnemy({ id: "ashwraith", name: "Ashwraith", x: 780, y: 420, hp: 80, atk: 14, range: 72, scale: 1.25 }),
+    new EVEnemy({ id: "ironbell", name: "Ironbell", x: 1280, y: 420, hp: 220, atk: 22, range: 92, scale: 1.45 }),
+    new EVEnemy({ id: "silkfang", name: "Silkfang", x: 1760, y: 420, hp: 70, atk: 16, range: 66, scale: 1.2 })
   ];
 
   function resize() {
@@ -34,15 +34,15 @@
     canvas.height = H;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
-    floor = H - 78;
+    floor = Math.floor(H * 0.72);
     if (ninja.onGround) ninja.y = floor;
-    foes.forEach((f) => { if (!f.dead) f.y = floor; });
+    foes.forEach((f) => { f.y = floor; });
   }
   window.addEventListener("resize", resize);
   resize();
 
-  for (let i = 0; i < 42; i++) {
-    embers.push({ x: Math.random() * 2600, y: Math.random() * 720, s: 0.6 + Math.random() * 1.8, v: 12 + Math.random() * 28, a: 0.15 + Math.random() * 0.45 });
+  for (let i = 0; i < 50; i++) {
+    embers.push({ x: Math.random() * 2600, y: Math.random() * 720, s: 0.7 + Math.random() * 2, v: 10 + Math.random() * 24, a: 0.2 + Math.random() * 0.4 });
   }
 
   function load() {
@@ -79,7 +79,7 @@
     if (e.code === "KeyR") ninja.parry();
     if (e.code === "KeyF" || e.code === "KeyJ") {
       const r = ninja.throwKnife();
-      if (r === "throw") knives.push({ x: ninja.x + ninja.dir * 34, y: ninja.y - 92, vx: ninja.dir * 520, life: 0.75, hit: false });
+      if (r === "throw") knives.push({ x: ninja.x + ninja.dir * 40, y: ninja.y - 110, vx: ninja.dir * 520, life: 0.75, hit: false });
     }
   });
   window.addEventListener("keyup", function (e) { keys[e.code] = false; });
@@ -89,45 +89,86 @@
     save(); EVAuth.logout(); location.href = "index.html";
   };
 
-  function drawFallbackWorld() {
-    ctx.fillStyle = "#09080f";
-    ctx.fillRect(0, 0, W, H);
-    for (let i = 0; i < 7; i++) {
-      const par = 0.12 + i * 0.1;
-      const x = -((cam * par) % 260);
-      ctx.fillStyle = "rgba(48,32,82," + (0.1 + i * 0.045) + ")";
-      for (let k = 0; k < Math.ceil(W / 160) + 3; k++) ctx.fillRect(x + k * 260, 30 + i * 28, 120 - i * 10, H * 0.42 - i * 16);
-    }
-    ctx.fillStyle = "#121018";
-    ctx.fillRect(0, floor, W, H - floor);
-    ctx.fillStyle = "rgba(190,150,255,0.22)";
-    ctx.fillRect(0, floor, W, 3);
+  function pillar(x, top, bot, w) {
+    ctx.fillStyle = "#1b1624";
+    ctx.fillRect(x, top, w, bot - top);
+    ctx.fillStyle = "#2a2436";
+    ctx.fillRect(x + 6, top, 4, bot - top);
+    ctx.fillStyle = "#0e0c14";
+    ctx.fillRect(x + w - 8, top, 8, bot - top);
+    ctx.fillStyle = "#3a3248";
+    ctx.fillRect(x - 8, top, w + 16, 14);
+    ctx.fillRect(x - 10, bot - 18, w + 20, 18);
+    const flick = 0.35 + Math.sin(tWorld * 8 + x) * 0.2;
+    ctx.fillStyle = "rgba(255,160,70," + (0.16 * flick) + ")";
+    ctx.beginPath();
+    ctx.arc(x + w * 0.5, top + 48, 22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#c47a28";
+    ctx.fillRect(x + w * 0.5 - 3, top + 28, 6, 16);
+    ctx.fillStyle = "#ffcc77";
+    ctx.fillRect(x + w * 0.5 - 2, top + 24, 4, 8);
   }
 
   function world() {
+    const sky = ctx.createLinearGradient(0, 0, 0, floor);
+    sky.addColorStop(0, "#140e1c");
+    sky.addColorStop(0.45, "#1c1428");
+    sky.addColorStop(1, "#2a1c14");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, H);
+
     const arena = window.EVArt && EVArt.imgs && EVArt.imgs.arena;
-    if (!arena || !arena.width) { drawFallbackWorld(); return; }
-    ctx.fillStyle = "#05040a";
+    if (arena && arena.width) {
+      const ih = floor + 40;
+      const iw = arena.width * (ih / arena.height);
+      const mid = -((cam * 0.35) % iw);
+      ctx.globalAlpha = 0.92;
+      for (let x = mid - iw; x < W + iw; x += iw) ctx.drawImage(arena, x, 0, iw, ih);
+      ctx.globalAlpha = 1;
+    }
+
+    ctx.fillStyle = "#0c0a12";
+    ctx.fillRect(0, 0, W, 56);
+    for (let i = 0; i < 12; i++) {
+      const bx = ((i * 160 - cam * 0.25) % (W + 160));
+      ctx.fillStyle = "#16121c";
+      ctx.fillRect(bx, 48, 140, 18);
+    }
+
+    const backY = 70;
+    for (let i = -1; i < 10; i++) {
+      const px = ((i * 220 - cam * 0.22) % (W + 220));
+      ctx.fillStyle = "rgba(32,24,48,0.55)";
+      ctx.fillRect(px, backY, 70, floor - backY);
+    }
+
+    for (let i = -1; i < 8; i++) {
+      const px = ((i * 280 - cam * 0.55) % (W + 280));
+      pillar(px, 64, floor, 52);
+    }
+
+    ctx.fillStyle = "#1a1410";
+    ctx.fillRect(0, floor, W, H - floor);
+    for (let i = 0; i < 16; i++) {
+      const tx = ((i * 90 - cam * 0.7) % (W + 90));
+      ctx.fillStyle = i % 2 ? "#241c18" : "#1e1814";
+      ctx.fillRect(tx, floor + 8, 86, H - floor);
+    }
+    ctx.fillStyle = "rgba(210,160,80,0.28)";
+    ctx.fillRect(0, floor, W, 3);
+    ctx.fillStyle = "rgba(0,0,0,0.35)";
+    ctx.fillRect(0, floor + 3, W, 10);
+
+    const glow = ctx.createRadialGradient(W * 0.5, floor - 40, 20, W * 0.5, floor, W * 0.7);
+    glow.addColorStop(0, "rgba(255,140,50,0.08)");
+    glow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
-    const ih = H;
-    const iw = arena.width * (ih / arena.height);
-    const far = -((cam * 0.18) % iw);
-    ctx.globalAlpha = 0.55;
-    ctx.filter = "blur(2px) saturate(0.85)";
-    for (let x = far - iw; x < W + iw; x += iw) ctx.drawImage(arena, x, -H * 0.06, iw, ih * 1.08);
-    ctx.filter = "none";
-    ctx.globalAlpha = 1;
-    const mid = -((cam * 0.42) % iw);
-    for (let x = mid - iw; x < W + iw; x += iw) ctx.drawImage(arena, x, 0, iw, ih);
-    const flick = 0.035 + Math.sin(tWorld * 7.2) * 0.012;
-    const g = ctx.createRadialGradient(W * 0.72, H * 0.42, 40, W * 0.55, H * 0.5, W * 0.7);
-    g.addColorStop(0, "rgba(255,150,50," + (0.07 + flick) + ")");
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
-    const vig = ctx.createRadialGradient(W * 0.5, H * 0.55, H * 0.2, W * 0.5, H * 0.5, H * 0.85);
+
+    const vig = ctx.createRadialGradient(W * 0.5, H * 0.55, H * 0.15, W * 0.5, H * 0.5, H * 0.8);
     vig.addColorStop(0, "rgba(0,0,0,0)");
-    vig.addColorStop(1, "rgba(0,0,0,0.55)");
+    vig.addColorStop(1, "rgba(0,0,0,0.5)");
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
   }
@@ -141,7 +182,7 @@
     }
     hp = Math.max(0, hp - dmg);
     invuln = 0.55;
-    EVCombat.burst(ninja.x, ninja.y - 70, "#ff6b4a", 16);
+    EVCombat.burst(ninja.x, ninja.y - 90, "#ff6b4a", 16);
     if (EV.audio) EV.audio.whoosh();
   }
 
@@ -160,7 +201,7 @@
         if (ninja.vx) ninja.dir = ninja.vx > 0 ? 1 : -1;
       }
       if (jump && ninja.onGround && ninja.state !== "parry") {
-        ninja.vy = -620;
+        ninja.vy = -640;
         ninja.onGround = false;
       }
       ninja.vy += 1750 * dt;
@@ -170,11 +211,11 @@
       if (ninja.x > 2400) ninja.x = 2400;
       if (ninja.y >= floor) { ninja.y = floor; ninja.vy = 0; ninja.onGround = true; }
       ninja.update(dt, { run: Math.abs(ninja.vx) > 20 && ninja.onGround });
-      cam = EV.parts.lerp(cam, ninja.x - W * 0.35, 0.08);
+      cam = EV.parts.lerp(cam, ninja.x - W * 0.38, 0.08);
 
       foes.forEach((f) => {
         const act = f.update(dt, ninja);
-        if (act === "strike") hurtPlayer(f.atk, f.x + f.dir * 20, f.y - 80);
+        if (act === "strike") hurtPlayer(f.atk, f.x + f.dir * 20, f.y - 90);
       });
 
       knives.forEach((k) => {
@@ -183,10 +224,10 @@
         if (k.hit) return;
         foes.forEach((f) => {
           if (f.dead || k.hit) return;
-          if (Math.abs(k.x - f.x) < 36 && Math.abs(k.y - (f.y - 70)) < 90) {
+          if (Math.abs(k.x - f.x) < 40 && Math.abs(k.y - (f.y - 80)) < 100) {
             k.hit = true; k.life = 0;
             f.hit(18);
-            EVCombat.burst(f.x, f.y - 80, "#ffe08a", 20);
+            EVCombat.burst(f.x, f.y - 90, "#ffe08a", 20);
             if (f.dead) gold += 25;
             if (EV.audio) EV.audio.coin();
           }
@@ -198,9 +239,9 @@
       world();
       embers.forEach((e) => {
         e.y -= e.v * dt;
-        if (e.y < -10) { e.y = H + 10; e.x = cam * 0.42 + Math.random() * W; }
+        if (e.y < 40) { e.y = floor - 10; e.x = cam * 0.4 + Math.random() * W; }
         ctx.fillStyle = "rgba(255,160,60," + e.a + ")";
-        ctx.beginPath(); ctx.arc(e.x - cam * 0.55, e.y, e.s, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(e.x - cam * 0.5, e.y, e.s, 0, Math.PI * 2); ctx.fill();
       });
       ctx.save();
       ctx.translate(-cam, 0);
