@@ -8,14 +8,24 @@
   const playEl = document.getElementById("play");
   const user = window.EVAuth && EVAuth.current();
   const SAVE = "endless-verses-run-" + (user ? user.name : "guest");
-  const W = canvas.width, H = canvas.height;
   const keys = {};
-  const ninja = new EVNinja({ x: 160, y: 318, scale: 1.15 });
+  const ninja = new EVNinja({ x: 280, y: 500, scale: 1.55 });
   const knives = [];
   let gold = 0;
   let playing = false;
   let cam = 0;
-  const floor = 340;
+  let W = 1280, H = 720, floor = 600;
+
+  function resize() {
+    W = Math.max(960, window.innerWidth);
+    H = Math.max(540, window.innerHeight);
+    canvas.width = W;
+    canvas.height = H;
+    floor = H - 86;
+    if (ninja.onGround) ninja.y = floor;
+  }
+  window.addEventListener("resize", resize);
+  resize();
 
   function load() {
     try {
@@ -29,6 +39,7 @@
 
   window.EVGame = {
     start: function () {
+      resize();
       playing = true;
       last = performance.now();
       EV.audio.start();
@@ -49,9 +60,7 @@
     if (e.code === "KeyR") ninja.parry();
     if (e.code === "KeyF" || e.code === "KeyJ") {
       const r = ninja.throwKnife();
-      if (r === "throw") {
-        knives.push({ x: ninja.x + ninja.dir * 18, y: ninja.y - 28, vx: ninja.dir * 420, life: 0.7 });
-      }
+      if (r === "throw") knives.push({ x: ninja.x + ninja.dir * 26, y: ninja.y - 42, vx: ninja.dir * 460, life: 0.75 });
     }
   });
   window.addEventListener("keyup", function (e) { keys[e.code] = false; });
@@ -62,21 +71,23 @@
   };
 
   function world() {
-    ctx.fillStyle = "#0b0912";
+    ctx.fillStyle = "#09080f";
     ctx.fillRect(0, 0, W, H);
-    for (let i = 0; i < 6; i++) {
-      const par = 0.15 + i * 0.12;
-      const x = -((cam * par) % 220);
-      ctx.fillStyle = "rgba(40,28,70," + (0.12 + i * 0.05) + ")";
-      for (let k = 0; k < 8; k++) ctx.fillRect(x + k * 220, 40 + i * 18, 90 - i * 8, 160 - i * 10);
+    for (let i = 0; i < 7; i++) {
+      const par = 0.12 + i * 0.1;
+      const x = -((cam * par) % 260);
+      ctx.fillStyle = "rgba(48,32,82," + (0.1 + i * 0.045) + ")";
+      for (let k = 0; k < Math.ceil(W / 160) + 3; k++) {
+        ctx.fillRect(x + k * 260, 30 + i * 28, 120 - i * 10, H * 0.42 - i * 16);
+      }
     }
-    ctx.fillStyle = "#16121c";
+    ctx.fillStyle = "#121018";
     ctx.fillRect(0, floor, W, H - floor);
-    ctx.fillStyle = "rgba(180,140,255,0.25)";
-    ctx.fillRect(0, floor, W, 2);
-    for (let i = 0; i < 18; i++) {
-      ctx.fillStyle = i % 2 ? "#1a1620" : "#141018";
-      ctx.fillRect(((i * 70 - cam) % (W + 70)), floor + 8, 68, 10);
+    ctx.fillStyle = "rgba(190,150,255,0.22)";
+    ctx.fillRect(0, floor, W, 3);
+    for (let i = 0; i < 28; i++) {
+      ctx.fillStyle = i % 2 ? "#19151f" : "#14121a";
+      ctx.fillRect(((i * 90 - cam * 0.6) % (W + 90)), floor + 10, 86, 14);
     }
   }
 
@@ -89,33 +100,33 @@
       const right = keys.KeyD || keys.ArrowRight;
       const jump = keys.Space || keys.KeyW || keys.ArrowUp;
       if (ninja.state !== "parry" && ninja.state !== "dash") {
-        ninja.vx = (right ? 190 : 0) - (left ? 190 : 0);
+        ninja.vx = (right ? 220 : 0) - (left ? 220 : 0);
         if (ninja.vx) ninja.dir = ninja.vx > 0 ? 1 : -1;
       }
       if (jump && ninja.onGround && ninja.state !== "parry") {
-        ninja.vy = -520;
+        ninja.vy = -620;
         ninja.onGround = false;
       }
-      ninja.vy += 1600 * dt;
+      ninja.vy += 1750 * dt;
       ninja.x += ninja.vx * dt;
       ninja.y += ninja.vy * dt;
-      if (ninja.x < 40) ninja.x = 40;
-      if (ninja.x > 900) ninja.x = 900;
+      if (ninja.x < 80) ninja.x = 80;
+      if (ninja.x > 2400) ninja.x = 2400;
       if (ninja.y >= floor) {
         ninja.y = floor;
         ninja.vy = 0;
         ninja.onGround = true;
       }
       ninja.update(dt, { run: Math.abs(ninja.vx) > 20 && ninja.onGround });
-      cam = EV.parts.lerp(cam, ninja.x - 200, 0.08);
+      cam = EV.parts.lerp(cam, ninja.x - W * 0.35, 0.08);
       knives.forEach((k) => { k.x += k.vx * dt; k.life -= dt; });
       for (let i = knives.length - 1; i >= 0; i--) if (knives[i].life <= 0) knives.splice(i, 1);
       world();
       ctx.save();
-      ctx.translate(-cam * 0.2, 0);
+      ctx.translate(-cam, 0);
       knives.forEach((k) => {
-        ctx.fillStyle = "#e8e4f0";
-        ctx.fillRect(k.x, k.y, 10, 2);
+        ctx.fillStyle = "#ece8f4";
+        ctx.fillRect(k.x, k.y, 14, 3);
       });
       ninja.draw(ctx, (EVLoadout.get().weapon || "blade"));
       ctx.restore();
