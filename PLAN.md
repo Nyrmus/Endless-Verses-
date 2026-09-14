@@ -3,20 +3,24 @@
 ## Was es ist
 2.5D Browser-Game. Mehrere Verse / Kraftsysteme.
 Ein Vers = eigene Welt, eigene Regeln, eigener Look.
-Verse sind nur erlaubt, wenn eine Lizenz vorliegt.
+Verse nur mit Lizenz.
 
-## Kern
-- Hub verbindet die Verse
-- Kampf / Kräfte je Vers anders
-- Fortschritt speichern (localStorage zuerst)
+## Stand
+**v0.1** im Repo: Hub + Bewegung + Vers-Wechsel (Platzhalter).
 
-## v0.1
-- Projektstruktur
-- Leere Spielseite die läuft
-- Ein Test-Vers als Platzhalter
-- Noch kein fertiges Spiel
+## v0.1 (jetzt)
+- index.html läuft lokal
+- A/D oder Pfeile: laufen
+- Leertaste / W: springen
+- 1 Hub / 2 Soul-Vers (Platzhalter, keine Fremd-Assets)
+- Save: Position + aktiver Vers (localStorage)
 
-## Danach
-- Erstes echtes Vers-System
-- 2.5D-Bewegung
-- Save
+## v0.2
+- Erstes echtes Kraft-System (nur lizenzierte IPs)
+- Angriff / Fähigkeit 1
+- Einfache Plattform / Gegner-Dummy
+
+## v0.3
+- Mehr Verse
+- UI Menü
+- GitHub Pages
