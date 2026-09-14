@@ -42,13 +42,6 @@
       background-size: 72px 72px, 46px 46px;
     }
     a { color: inherit; text-decoration: none; }
-    button, .btn, .diamond, .stars button, #accountToggle {
-      transition: box-shadow .2s ease, transform .2s ease, filter .2s ease;
-    }
-    button:hover, .btn:hover, #accountToggle:hover, .stars button:hover {
-      box-shadow: 0 0 28px rgba(181,107,255,.7);
-      filter: brightness(1.12);
-    }
     .off { display: none !important; }
     .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 22px 22px 96px; }
     .glass {
@@ -63,15 +56,44 @@
     }
     .logo { font-weight: 700; letter-spacing: .28em; font-size: 11px; }
     .nav nav { display: flex; gap: 22px; color: var(--mute); font-size: 14px; }
-    .account-wrap { position: relative; }
+    .account-wrap { position: relative; z-index: 30; }
     #accountToggle {
       background: rgba(181,107,255,.12); color: #fff; border: 1px solid var(--line);
       padding: 9px 14px; border-radius: 999px; cursor: pointer; font: inherit;
     }
+    #accountToggle:hover { box-shadow: 0 0 22px rgba(181,107,255,.55); }
     #accountPanel {
       position: absolute; right: 0; top: calc(100% + 12px);
-      width: 300px; padding: 16px; border-radius: 22px; z-index: 20;
+      width: 320px; padding: 18px; border-radius: 22px; z-index: 40;
     }
+    #accountPanel .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    #accountPanel .tabs button {
+      flex: 1; background: rgba(255,255,255,.04); color: #f4edff;
+      border: 1px solid var(--line); padding: 9px 0; border-radius: 999px;
+      cursor: pointer; font: inherit;
+    }
+    #accountPanel .tabs button.active {
+      background: rgba(181,107,255,.25); box-shadow: 0 0 16px rgba(181,107,255,.25);
+    }
+    #accountPanel form { display: flex; flex-direction: column; gap: 14px; }
+    #accountPanel label {
+      display: flex; flex-direction: column; gap: 8px;
+      font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute);
+    }
+    #accountPanel input {
+      height: 46px; width: 100%;
+      background: #0b0914; color: #fff;
+      border: 1px solid rgba(214,186,255,.32);
+      border-radius: 12px; padding: 0 14px;
+      font: 16px/1 Syne, sans-serif;
+      outline: none; appearance: none; -webkit-appearance: none;
+    }
+    #accountPanel input:hover { border-color: rgba(214,186,255,.55); }
+    #accountPanel input:focus {
+      border-color: #c9a6ff;
+      box-shadow: 0 0 0 3px rgba(181,107,255,.28);
+    }
+    #accountPanel .btn { width: 100%; margin-top: 2px; }
     .hero { padding: 90px 0 28px; text-align: center; }
     .hero h1 {
       font-family: "Instrument Serif", serif; font-weight: 400;
@@ -87,7 +109,9 @@
       background: linear-gradient(180deg, #e0c2ff, var(--violet) 40%, var(--deep));
       color: #14081f; cursor: pointer; font: inherit; font-weight: 700;
       box-shadow: 0 0 0 1px rgba(255,255,255,.2), 0 12px 40px rgba(109,43,255,.45);
+      transition: box-shadow .2s ease, filter .2s ease;
     }
+    .btn:hover { box-shadow: 0 0 28px rgba(181,107,255,.7); filter: brightness(1.08); }
     .btn.locked { filter: grayscale(.15); opacity: .7; }
     .stars { display: flex; gap: 10px; justify-content: center; margin-top: 28px; }
     .stars button {
@@ -95,15 +119,12 @@
       background: rgba(255,255,255,.04); color: #e3c9ff; cursor: pointer;
       clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
     }
+    .stars button:hover { box-shadow: 0 0 18px rgba(181,107,255,.6); }
     #rateAvg { margin-top: 12px; color: var(--mute); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
     section { padding: 56px 0 10px; }
     h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; margin-bottom: 22px; }
     .socials { display: flex; justify-content: center; gap: 42px; flex-wrap: wrap; padding: 20px 0; }
-    .spin-wrap {
-      width: 170px; height: 170px;
-      animation: spinY 7s linear infinite;
-      transform-style: preserve-3d;
-    }
+    .spin-wrap { width: 170px; height: 170px; animation: spinY 7s linear infinite; transform-style: preserve-3d; }
     .spin-wrap:nth-child(2) { animation-duration: 8.2s; animation-direction: reverse; }
     .spin-wrap:nth-child(3) { animation-duration: 6.4s; }
     @keyframes spinY {
@@ -125,18 +146,13 @@
     }
     .diamond .tag { display: block; color: #d7b8ff; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; }
     .slot-wrap { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
-    #slot {
-      display: flex; gap: 10px; padding: 18px; border-radius: 24px;
-    }
+    #slot { display: flex; gap: 10px; padding: 18px; border-radius: 24px; }
     .reel {
       width: 72px; height: 88px; border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
       font-size: 36px; background: rgba(0,0,0,.35); border: 1px solid var(--line);
     }
-    #slot.jackpot {
-      animation: boom .6s ease 3;
-      box-shadow: 0 0 50px #ff4fd8, 0 0 90px #7b3dff;
-    }
+    #slot.jackpot { animation: boom .6s ease 3; box-shadow: 0 0 50px #ff4fd8, 0 0 90px #7b3dff; }
     @keyframes boom {
       0%,100% { transform: scale(1) rotate(0); }
       30% { transform: scale(1.06) rotate(-2deg); }
@@ -145,17 +161,20 @@
     .slot-side { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
     .tokens { letter-spacing: .12em; text-transform: uppercase; color: #d7b8ff; }
     .box { max-width: 560px; padding: 20px; border-radius: 26px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-    .tabs button, #logoutBtn, .cmt-actions button {
+    .cmt-actions button, #logoutBtn {
       background: rgba(255,255,255,.05); color: #f4edff; border: 1px solid var(--line);
       padding: 7px 11px; border-radius: 999px; cursor: pointer; font: inherit;
     }
-    .tabs button.active { background: rgba(181,107,255,.2); }
     form { display: flex; flex-direction: column; gap: 10px; }
     label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--mute); }
     input, textarea {
-      background: rgba(8,6,16,.65); color: #fff; border: 1px solid var(--line);
+      background: #0b0914; color: #fff; border: 1px solid var(--line);
       padding: 11px 12px; border-radius: 14px; font: inherit; width: 100%;
+      outline: none;
+    }
+    input:focus, textarea:focus {
+      border-color: #c9a6ff;
+      box-shadow: 0 0 0 3px rgba(181,107,255,.25);
     }
     textarea { min-height: 88px; resize: vertical; }
     .msg, #commentErr { color: #ff9ad8; min-height: 1.2em; }
